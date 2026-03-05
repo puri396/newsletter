@@ -1,0 +1,165 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Status of a newsletter in its lifecycle.
+enum NewsletterStatus {
+  draft
+  scheduled
+  published
+}
+
+/// Status of a subscriber.
+enum SubscriberStatus {
+  active
+  unsubscribed
+}
+
+/// Status of a scheduled send.
+enum ScheduleStatus {
+  pending
+  sending
+  sent
+  failed
+}
+
+/// Status of an email log (delivery and engagement).
+enum EmailLogStatus {
+  pending
+  sent
+  delivered
+  opened
+  clicked
+  failed
+}
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  hashedPassword String
+  name           String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  newsletters    Newsletter[]
+}
+
+model Newsletter {
+  id           String            @id @default(uuid())
+  status       NewsletterStatus  @default(draft)
+  subject      String
+  description  String?
+  body         String
+  /// Denormalized tags for quick filtering; authoritative relations are in NewsletterTag.
+  tags         String[]
+  aiPrompt     String?
+  aiModel      String?
+  imagePrompts Json?
+  videoScript  Json?
+  /// Optional banner image URL (e.g. from AI generation). May be temporary; production may re-host.
+  bannerImageUrl String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  authorId     String?
+  author       User?             @relation(fields: [authorId], references: [id])
+
+  schedules    Schedule[]
+  emailLogs    EmailLog[]
+  newsletterTags NewsletterTag[]
+
+  @@index([status, createdAt(sort: Desc)], map: "idx_newsletter_status_createdAt")
+}
+
+/// Newsletter subscriber. Email is required; phone is optional and used for WhatsApp when whatsappOptIn is true.
+/// Phone is unique when set so one number cannot be associated with multiple accounts.
+model Subscriber {
+  id             String           @id @default(uuid())
+  email          String           @unique
+  name           String?
+  /// E.164 format; optional. When set, unique across subscribers. Used for WhatsApp notifications when whatsappOptIn is true.
+  phone          String?          @unique
+  /// If true and phone is set, subscriber receives WhatsApp notifications for new newsletters. Default false for migration safety and explicit opt-in.
+  whatsappOptIn  Boolean          @default(false)
+  status         SubscriberStatus  @default(active)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  unsubscribedAt DateTime?
+  /// Arbitrary metadata such as source, custom tags, etc.
+  meta           Json?
+
+  emailLogs      EmailLog[]
+
+  @@index([status], map: "idx_subscriber_status")
+  @@index([createdAt(sort: Desc)], map: "idx_subscriber_createdAt")
+}
+
+model Schedule {
+  id           String         @id @default(uuid())
+  newsletterId String
+  sendAt       DateTime
+  status       ScheduleStatus @default(pending)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  errorMessage String?
+
+  newsletter   Newsletter     @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
+
+  @@index([status, sendAt], map: "idx_schedule_status_sendAt")
+}
+
+model EmailLog {
+  id                String         @id @default(uuid())
+  newsletterId      String
+  subscriberId      String
+  provider          String
+  providerMessageId String
+  status            EmailLogStatus @default(sent)
+  opened            Boolean        @default(false)
+  clicked           Boolean        @default(false)
+  deliveredAt       DateTime?
+  openedAt          DateTime?
+  clickedAt         DateTime?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  newsletter        Newsletter  @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
+  subscriber        Subscriber  @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  @@index([newsletterId], map: "idx_email_log_newsletterId")
+  @@index([subscriberId], map: "idx_email_log_subscriberId")
+  @@unique([provider, providerMessageId], map: "idx_email_log_providerMessageId")
+  @@index([opened, clicked], map: "idx_email_log_opened_clicked")
+  @@index([status], map: "idx_email_log_status")
+}
+
+model Tag {
+  id          String          @id @default(uuid())
+  name        String          @unique
+  createdAt   DateTime        @default(now())
+
+  newsletterTags NewsletterTag[]
+}
+
+model NewsletterTag {
+  newsletterId String
+  tagId        String
+
+  newsletter   Newsletter @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
+  tag          Tag        @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([newsletterId, tagId])
+}
+

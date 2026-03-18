@@ -8,6 +8,8 @@ type SubmitState = "idle" | "loading" | "success" | "already" | "error";
 export function SubscribeForm() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [whatsappOptIn, setWhatsappOptIn] = useState(false);
   const [state, setState] = useState<SubmitState>("idle");
   const [message, setMessage] = useState<string | null>(null);
   const websiteRef = useRef<HTMLInputElement>(null);
@@ -24,6 +26,8 @@ export function SubscribeForm() {
         body: JSON.stringify({
           email: email.trim(),
           name: name.trim() || undefined,
+          phone: phone.trim() || undefined,
+          whatsappOptIn: whatsappOptIn || undefined,
           website: websiteRef.current?.value ?? "",
         }),
       });
@@ -47,7 +51,7 @@ export function SubscribeForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-6 space-y-4"
+      className="space-y-4 rounded-xl border border-violet-500/40 bg-slate-950/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.95)]"
       aria-label="Subscribe form"
     >
       {/* Honeypot: hidden from users; bots that fill it get rejected */}
@@ -63,7 +67,10 @@ export function SubscribeForm() {
         />
       </div>
       <div>
-        <label htmlFor="subscribe-email" className="block text-sm font-medium text-zinc-300">
+        <label
+          htmlFor="subscribe-email"
+          className="block text-sm font-medium text-slate-200"
+        >
           Email <span className="text-red-400" aria-hidden>*</span>
         </label>
         <input
@@ -73,14 +80,17 @@ export function SubscribeForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
-          className="mt-1 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+          className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-violet-400 focus:outline-none focus:ring-1 focus:ring-violet-400"
           disabled={state === "loading"}
           autoComplete="email"
         />
       </div>
       <div>
-        <label htmlFor="subscribe-name" className="block text-sm font-medium text-zinc-300">
-          Name <span className="text-zinc-500 text-xs">(optional)</span>
+        <label
+          htmlFor="subscribe-name"
+          className="block text-sm font-medium text-slate-200"
+        >
+          Name <span className="text-xs text-slate-500">(optional)</span>
         </label>
         <input
           id="subscribe-name"
@@ -88,15 +98,46 @@ export function SubscribeForm() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Your name"
-          className="mt-1 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+          className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-violet-400 focus:outline-none focus:ring-1 focus:ring-violet-400"
           disabled={state === "loading"}
           autoComplete="name"
         />
       </div>
+      <div>
+        <label
+          htmlFor="subscribe-phone"
+          className="block text-sm font-medium text-slate-200"
+        >
+          Phone <span className="text-xs text-slate-500">(optional, E.164 e.g. +1234567890)</span>
+        </label>
+        <input
+          id="subscribe-phone"
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="+1234567890"
+          className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-violet-400 focus:outline-none focus:ring-1 focus:ring-violet-400"
+          disabled={state === "loading"}
+          autoComplete="tel"
+        />
+      </div>
+      <div className="flex items-center gap-2">
+        <input
+          id="subscribe-whatsapp"
+          type="checkbox"
+          checked={whatsappOptIn}
+          onChange={(e) => setWhatsappOptIn(e.target.checked)}
+          disabled={state === "loading"}
+          className="h-4 w-4 rounded border-slate-600 bg-slate-950 text-violet-500 focus:ring-violet-400"
+        />
+        <label htmlFor="subscribe-whatsapp" className="text-sm text-slate-200">
+          Receive WhatsApp updates (phone required)
+        </label>
+      </div>
       <button
         type="submit"
         disabled={state === "loading"}
-        className="w-full rounded-md bg-zinc-100 px-4 py-2.5 text-sm font-medium text-zinc-900 transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-md bg-gradient-to-r from-violet-500 via-fuchsia-500 to-indigo-400 px-4 py-2.5 text-sm font-medium text-slate-50 shadow-[0_0_25px_rgba(129,140,248,0.9)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {state === "loading" ? "Subscribing…" : "Subscribe"}
       </button>

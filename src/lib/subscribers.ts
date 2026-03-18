@@ -15,6 +15,8 @@ export interface SubscriberDto {
   email: string;
   name: string | null;
   status: string;
+  phone: string | null;
+  whatsappOptIn: boolean;
   createdAt: string;
   updatedAt: string;
   unsubscribedAt: string | null;
@@ -25,6 +27,8 @@ export function toSubscriberDto(row: {
   email: string;
   name: string | null;
   status: string;
+  phone?: string | null;
+  whatsappOptIn?: boolean;
   createdAt: Date;
   updatedAt: Date;
   unsubscribedAt: Date | null;
@@ -34,6 +38,8 @@ export function toSubscriberDto(row: {
     email: row.email,
     name: row.name,
     status: row.status,
+    phone: row.phone ?? null,
+    whatsappOptIn: row.whatsappOptIn ?? false,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
     unsubscribedAt: row.unsubscribedAt?.toISOString() ?? null,

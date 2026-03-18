@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { sendNewsletterEmail, EMAIL_PROVIDER_NAME } from "@/lib/email";
+import { uniqueSlug } from "@/lib/slug";
+import { errorResponse, ERROR_CODES } from "@/lib/api/error-response";
+import {
+  isWhatsAppConfigured,
+  getWhatsAppConfig,
+  sendWhatsAppTemplate,
+  buildNewsletterTemplateParams,
+} from "@/lib/whatsapp";
+import { getWhatsAppRecipients } from "@/lib/subscribers/whatsapp";
+import { log } from "@/lib/logger";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -12,9 +22,10 @@ export async function POST(
   try {
     const { id: newsletterId } = await context.params;
     if (!newsletterId) {
-      return NextResponse.json(
-        { error: "Newsletter ID is required." },
-        { status: 400 },
+      return errorResponse(
+        ERROR_CODES.VALIDATION_ERROR,
+        "Newsletter ID is required.",
+        400,
       );
     }
 
@@ -22,9 +33,10 @@ export async function POST(
       where: { id: newsletterId },
     });
     if (!newsletter) {
-      return NextResponse.json(
-        { error: "Newsletter not found." },
-        { status: 404 },
+      return errorResponse(
+        ERROR_CODES.NOT_FOUND,
+        "Newsletter not found.",
+        404,
       );
     }
 
@@ -39,14 +51,16 @@ export async function POST(
       where: { status: "active" },
     });
 
-    const payload = {
-      newsletter: {
-        id: newsletter.id,
-        subject: newsletter.subject,
-        description: newsletter.description,
-        body: newsletter.body,
-        bannerImageUrl: newsletter.bannerImageUrl ?? undefined,
-      },
+    const newsletterPayload = {
+      id: newsletter.id,
+      subject: newsletter.subject,
+      description: newsletter.description,
+      body: newsletter.body,
+      bannerImageUrl: newsletter.bannerImageUrl ?? undefined,
+      logoUrl: newsletter.logoUrl ?? undefined,
+      contentType: newsletter.contentType ?? "newsletter",
+      authorName: newsletter.authorName ?? undefined,
+      publishedAt: newsletter.publishedAt ?? new Date(),
     };
 
     let sent = 0;
@@ -54,7 +68,7 @@ export async function POST(
 
     for (const subscriber of subscribers) {
       const result = await sendNewsletterEmail({
-        ...payload,
+        newsletter: newsletterPayload,
         subscriber: {
           id: subscriber.id,
           email: subscriber.email,
@@ -75,13 +89,63 @@ export async function POST(
         sent += 1;
       } else {
         failed += 1;
+        log("error", "Failed to send email to subscriber in publish-now", {
+          context: "publish-now",
+          newsletterId,
+          subscriberId: subscriber.id,
+        });
       }
+    }
+
+    let whatsappSent = 0;
+    let whatsappFailed = 0;
+    if (isWhatsAppConfigured()) {
+      const waRecipients = await getWhatsAppRecipients();
+      const configResult = getWhatsAppConfig();
+      if (configResult.configured) {
+        const templateName = configResult.config.templateName;
+        const templateParams = buildNewsletterTemplateParams(
+          newsletter.subject,
+          newsletter.id,
+        );
+        for (const sub of waRecipients) {
+          const result = await sendWhatsAppTemplate(
+            sub.phone,
+            templateName,
+            templateParams,
+          );
+          if (result.messageId) {
+            whatsappSent += 1;
+          } else {
+            whatsappFailed += 1;
+            log("error", "WhatsApp send failed in publish-now", {
+              context: "publish-now",
+              newsletterId,
+              toLast4: sub.phone.slice(-4),
+              error: result.error,
+            });
+          }
+        }
+      }
+    }
+
+    // Auto-generate a slug for blog posts that don't have one yet
+    let slug = newsletter.slug ?? null;
+    if (newsletter.contentType === "blog" && !slug) {
+      slug = await uniqueSlug(newsletter.subject, async (s) => {
+        const existing = await prisma.newsletter.findFirst({ where: { slug: s } });
+        return !!existing;
+      });
     }
 
     await prisma.$transaction([
       prisma.newsletter.update({
         where: { id: newsletterId },
-        data: { status: "published" },
+        data: {
+          status: "published",
+          publishedAt: new Date(),
+          ...(slug ? { slug } : {}),
+        },
       }),
       prisma.schedule.create({
         data: {
@@ -92,11 +156,15 @@ export async function POST(
       }),
     ]);
 
-    return NextResponse.json({ sent, failed }, { status: 200 });
-  } catch {
     return NextResponse.json(
-      { error: "Failed to publish newsletter." },
-      { status: 500 },
+      { sent, failed, whatsappSent, whatsappFailed, slug },
+      { status: 200 },
+    );
+  } catch {
+    return errorResponse(
+      ERROR_CODES.DATABASE_ERROR,
+      "Failed to publish newsletter.",
+      500,
     );
   }
 }

@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
-import { RateLimitError } from "openai";
 import { z } from "zod";
-import { getOpenAIClientFallback } from "@/lib/ai";
 import { generateBannerImage } from "@/lib/ai-image";
 import { errorResponse, ERROR_CODES } from "@/lib/api/error-response";
 import { log } from "@/lib/logger";
+import { prisma } from "@/lib/db";
+
+const APP_URL =
+  process.env.APP_URL?.replace(/\/$/, "") ??
+  process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ??
+  "";
 
 const BodySchema = z.object({
   prompt: z.string().min(1, "Prompt is required"),
@@ -28,22 +32,11 @@ export async function POST(request: Request) {
       if (result.error.includes("not configured")) {
         return errorResponse(
           ERROR_CODES.AI_SERVICE_UNAVAILABLE,
-          "AI image service is not configured. Please set GEMINI_API_KEY or OPENAI_API_KEY.",
+          "AI image service is not configured. Please set HUGGINGFACE_API_KEY.",
           503,
         );
       }
       if (result.error.includes("Too many requests")) {
-        const fallbackClient = getOpenAIClientFallback();
-        if (fallbackClient) {
-          const fallbackResult = await generateBannerImage(prompt, fallbackClient);
-          if ("url" in fallbackResult) {
-            return NextResponse.json({ url: fallbackResult.url }, { status: 200 });
-          }
-          log("error", "AI generate-banner fallback key also failed", {
-            route: "api/ai/generate-banner",
-            errorMessage: fallbackResult.error,
-          });
-        }
         return errorResponse(
           ERROR_CODES.AI_RATE_LIMIT,
           result.error,
@@ -57,7 +50,36 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ url: result.url }, { status: 200 });
+    // Auto-upload the data: URL to the media library so it can be used in emails.
+    // The raw data: URL is stripped by email clients (Resend) so we need a
+    // permanent /api/media/[id] URL instead.
+    let finalUrl: string = result.url;
+    try {
+      if (result.url.startsWith("data:")) {
+        const match = result.url.match(/^data:(image\/[^;]+);base64,(.+)$/);
+        if (match) {
+          const [, mimeType, base64] = match;
+          const size = Math.round((base64.length * 3) / 4);
+          const media = await prisma.media.create({
+            data: {
+              name: `ai-banner-${Date.now()}.png`,
+              mimeType: mimeType ?? "image/png",
+              size,
+              dataUrl: result.url,
+            },
+          });
+          finalUrl = `${APP_URL}/api/media/${media.id}`;
+        }
+      }
+    } catch (uploadErr) {
+      // Non-fatal: return original data: URL if upload fails
+      log("error", "Failed to persist AI-generated banner to media", {
+        route: "api/ai/generate-banner",
+        errorMessage: uploadErr instanceof Error ? uploadErr.message : String(uploadErr),
+      });
+    }
+
+    return NextResponse.json({ url: finalUrl }, { status: 200 });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     log("error", "AI generate-banner failed", {
@@ -65,19 +87,11 @@ export async function POST(request: Request) {
       errorMessage: message,
     });
 
-    if (message.includes("OPENAI_API_KEY") || message.includes("GEMINI_API_KEY")) {
+    if (message.includes("HUGGINGFACE_API_KEY")) {
       return errorResponse(
         ERROR_CODES.AI_SERVICE_UNAVAILABLE,
-        "AI service is not configured. Please set GEMINI_API_KEY or OPENAI_API_KEY.",
+        "AI image service is not configured. Please set HUGGINGFACE_API_KEY.",
         503,
-      );
-    }
-
-    if (error instanceof RateLimitError) {
-      return errorResponse(
-        ERROR_CODES.AI_RATE_LIMIT,
-        "Too many requests. Please try again in a moment.",
-        429,
       );
     }
 

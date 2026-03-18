@@ -5,6 +5,11 @@ export interface SendNewsletterNewsletter {
   description?: string | null;
   body: string;
   bannerImageUrl?: string | null;
+  logoUrl?: string | null;
+  /** 'blog' | 'newsletter' | 'image' | 'video' — controls which email template is used. */
+  contentType?: string | null;
+  authorName?: string | null;
+  publishedAt?: Date | string | null;
 }
 
 /** Minimal subscriber payload for sending. */

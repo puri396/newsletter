@@ -38,6 +38,7 @@ export type EmailLogMinAggregateOutputType = {
   clickedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type EmailLogMaxAggregateOutputType = {
@@ -54,6 +55,7 @@ export type EmailLogMaxAggregateOutputType = {
   clickedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type EmailLogCountAggregateOutputType = {
@@ -70,6 +72,7 @@ export type EmailLogCountAggregateOutputType = {
   clickedAt: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   _all: number
 }
 
@@ -88,6 +91,7 @@ export type EmailLogMinAggregateInputType = {
   clickedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type EmailLogMaxAggregateInputType = {
@@ -104,6 +108,7 @@ export type EmailLogMaxAggregateInputType = {
   clickedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type EmailLogCountAggregateInputType = {
@@ -120,6 +125,7 @@ export type EmailLogCountAggregateInputType = {
   clickedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -209,6 +215,7 @@ export type EmailLogGroupByOutputType = {
   clickedAt: Date | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   _count: EmailLogCountAggregateOutputType | null
   _min: EmailLogMinAggregateOutputType | null
   _max: EmailLogMaxAggregateOutputType | null
@@ -246,6 +253,7 @@ export type EmailLogWhereInput = {
   clickedAt?: Prisma.DateTimeNullableFilter<"EmailLog"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"EmailLog"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmailLog"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"EmailLog"> | Date | string | null
   newsletter?: Prisma.XOR<Prisma.NewsletterScalarRelationFilter, Prisma.NewsletterWhereInput>
   subscriber?: Prisma.XOR<Prisma.SubscriberScalarRelationFilter, Prisma.SubscriberWhereInput>
 }
@@ -264,6 +272,7 @@ export type EmailLogOrderByWithRelationInput = {
   clickedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   newsletter?: Prisma.NewsletterOrderByWithRelationInput
   subscriber?: Prisma.SubscriberOrderByWithRelationInput
 }
@@ -286,6 +295,7 @@ export type EmailLogWhereUniqueInput = Prisma.AtLeast<{
   clickedAt?: Prisma.DateTimeNullableFilter<"EmailLog"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"EmailLog"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmailLog"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"EmailLog"> | Date | string | null
   newsletter?: Prisma.XOR<Prisma.NewsletterScalarRelationFilter, Prisma.NewsletterWhereInput>
   subscriber?: Prisma.XOR<Prisma.SubscriberScalarRelationFilter, Prisma.SubscriberWhereInput>
 }, "id" | "provider_providerMessageId">
@@ -304,6 +314,7 @@ export type EmailLogOrderByWithAggregationInput = {
   clickedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.EmailLogCountOrderByAggregateInput
   _max?: Prisma.EmailLogMaxOrderByAggregateInput
   _min?: Prisma.EmailLogMinOrderByAggregateInput
@@ -326,6 +337,7 @@ export type EmailLogScalarWhereWithAggregatesInput = {
   clickedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmailLog"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"EmailLog"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"EmailLog"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmailLog"> | Date | string | null
 }
 
 export type EmailLogCreateInput = {
@@ -340,6 +352,7 @@ export type EmailLogCreateInput = {
   clickedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   newsletter: Prisma.NewsletterCreateNestedOneWithoutEmailLogsInput
   subscriber: Prisma.SubscriberCreateNestedOneWithoutEmailLogsInput
 }
@@ -358,6 +371,7 @@ export type EmailLogUncheckedCreateInput = {
   clickedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type EmailLogUpdateInput = {
@@ -372,6 +386,7 @@ export type EmailLogUpdateInput = {
   clickedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   newsletter?: Prisma.NewsletterUpdateOneRequiredWithoutEmailLogsNestedInput
   subscriber?: Prisma.SubscriberUpdateOneRequiredWithoutEmailLogsNestedInput
 }
@@ -390,6 +405,7 @@ export type EmailLogUncheckedUpdateInput = {
   clickedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type EmailLogCreateManyInput = {
@@ -406,6 +422,7 @@ export type EmailLogCreateManyInput = {
   clickedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type EmailLogUpdateManyMutationInput = {
@@ -420,6 +437,7 @@ export type EmailLogUpdateManyMutationInput = {
   clickedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type EmailLogUncheckedUpdateManyInput = {
@@ -436,6 +454,7 @@ export type EmailLogUncheckedUpdateManyInput = {
   clickedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type EmailLogListRelationFilter = {
@@ -467,6 +486,7 @@ export type EmailLogCountOrderByAggregateInput = {
   clickedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type EmailLogMaxOrderByAggregateInput = {
@@ -483,6 +503,7 @@ export type EmailLogMaxOrderByAggregateInput = {
   clickedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type EmailLogMinOrderByAggregateInput = {
@@ -499,6 +520,7 @@ export type EmailLogMinOrderByAggregateInput = {
   clickedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type EmailLogCreateNestedManyWithoutNewsletterInput = {
@@ -601,6 +623,7 @@ export type EmailLogCreateWithoutNewsletterInput = {
   clickedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   subscriber: Prisma.SubscriberCreateNestedOneWithoutEmailLogsInput
 }
 
@@ -617,6 +640,7 @@ export type EmailLogUncheckedCreateWithoutNewsletterInput = {
   clickedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type EmailLogCreateOrConnectWithoutNewsletterInput = {
@@ -662,6 +686,7 @@ export type EmailLogScalarWhereInput = {
   clickedAt?: Prisma.DateTimeNullableFilter<"EmailLog"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"EmailLog"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmailLog"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"EmailLog"> | Date | string | null
 }
 
 export type EmailLogCreateWithoutSubscriberInput = {
@@ -676,6 +701,7 @@ export type EmailLogCreateWithoutSubscriberInput = {
   clickedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   newsletter: Prisma.NewsletterCreateNestedOneWithoutEmailLogsInput
 }
 
@@ -692,6 +718,7 @@ export type EmailLogUncheckedCreateWithoutSubscriberInput = {
   clickedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type EmailLogCreateOrConnectWithoutSubscriberInput = {
@@ -733,6 +760,7 @@ export type EmailLogCreateManyNewsletterInput = {
   clickedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type EmailLogUpdateWithoutNewsletterInput = {
@@ -747,6 +775,7 @@ export type EmailLogUpdateWithoutNewsletterInput = {
   clickedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   subscriber?: Prisma.SubscriberUpdateOneRequiredWithoutEmailLogsNestedInput
 }
 
@@ -763,6 +792,7 @@ export type EmailLogUncheckedUpdateWithoutNewsletterInput = {
   clickedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type EmailLogUncheckedUpdateManyWithoutNewsletterInput = {
@@ -778,6 +808,7 @@ export type EmailLogUncheckedUpdateManyWithoutNewsletterInput = {
   clickedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type EmailLogCreateManySubscriberInput = {
@@ -793,6 +824,7 @@ export type EmailLogCreateManySubscriberInput = {
   clickedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type EmailLogUpdateWithoutSubscriberInput = {
@@ -807,6 +839,7 @@ export type EmailLogUpdateWithoutSubscriberInput = {
   clickedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   newsletter?: Prisma.NewsletterUpdateOneRequiredWithoutEmailLogsNestedInput
 }
 
@@ -823,6 +856,7 @@ export type EmailLogUncheckedUpdateWithoutSubscriberInput = {
   clickedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type EmailLogUncheckedUpdateManyWithoutSubscriberInput = {
@@ -838,6 +872,7 @@ export type EmailLogUncheckedUpdateManyWithoutSubscriberInput = {
   clickedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -856,6 +891,7 @@ export type EmailLogSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   clickedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   newsletter?: boolean | Prisma.NewsletterDefaultArgs<ExtArgs>
   subscriber?: boolean | Prisma.SubscriberDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["emailLog"]>
@@ -874,6 +910,7 @@ export type EmailLogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   clickedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   newsletter?: boolean | Prisma.NewsletterDefaultArgs<ExtArgs>
   subscriber?: boolean | Prisma.SubscriberDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["emailLog"]>
@@ -892,6 +929,7 @@ export type EmailLogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   clickedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   newsletter?: boolean | Prisma.NewsletterDefaultArgs<ExtArgs>
   subscriber?: boolean | Prisma.SubscriberDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["emailLog"]>
@@ -910,9 +948,10 @@ export type EmailLogSelectScalar = {
   clickedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }
 
-export type EmailLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "newsletterId" | "subscriberId" | "provider" | "providerMessageId" | "status" | "opened" | "clicked" | "deliveredAt" | "openedAt" | "clickedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["emailLog"]>
+export type EmailLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "newsletterId" | "subscriberId" | "provider" | "providerMessageId" | "status" | "opened" | "clicked" | "deliveredAt" | "openedAt" | "clickedAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["emailLog"]>
 export type EmailLogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   newsletter?: boolean | Prisma.NewsletterDefaultArgs<ExtArgs>
   subscriber?: boolean | Prisma.SubscriberDefaultArgs<ExtArgs>
@@ -946,6 +985,7 @@ export type $EmailLogPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     clickedAt: Date | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
   }, ExtArgs["result"]["emailLog"]>
   composites: {}
 }
@@ -1384,6 +1424,7 @@ export interface EmailLogFieldRefs {
   readonly clickedAt: Prisma.FieldRef<"EmailLog", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"EmailLog", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"EmailLog", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"EmailLog", 'DateTime'>
 }
     
 

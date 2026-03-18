@@ -1,9 +1,36 @@
 import { NextResponse } from "next/server";
+import { randomBytes } from "crypto";
+import { render } from "@react-email/render";
+import React from "react";
 import { prisma } from "@/lib/db";
 import { getClientId, checkRateLimit } from "@/lib/rate-limit";
 import { normalizeToE164 } from "@/lib/phone";
 import { isValidEmail } from "@/lib/subscribers";
 import { log } from "@/lib/logger";
+import { sendWelcomeEmail } from "@/lib/email/send-welcome";
+import { resendProvider, getFromEmail } from "@/lib/email/provider-resend";
+import { ConfirmSubscriptionTemplate } from "@/emails/ConfirmSubscriptionTemplate";
+
+const APP_URL =
+  process.env.APP_URL?.replace(/\/$/, "") ??
+  process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ??
+  "http://localhost:3000";
+
+const DOUBLE_OPT_IN = process.env.DOUBLE_OPT_IN === "true";
+
+async function sendConfirmationEmail(email: string, name: string | null, token: string) {
+  const confirmUrl = `${APP_URL}/api/subscribe/confirm?token=${token}`;
+  const html = await render(
+    React.createElement(ConfirmSubscriptionTemplate, { confirmUrl, subscriberName: name }),
+  );
+  await resendProvider.send({
+    from: getFromEmail(),
+    to: email,
+    subject: "Please confirm your subscription",
+    html,
+    text: `Confirm your subscription by visiting: ${confirmUrl}`,
+  });
+}
 
 interface SubscribeBody {
   email?: string;
@@ -102,6 +129,36 @@ export async function POST(request: Request) {
       }
     }
 
+    if (DOUBLE_OPT_IN) {
+      // Create subscriber as 'pending' and send confirmation email
+      const confirmToken = randomBytes(32).toString("hex");
+      await prisma.subscriber.create({
+        data: {
+          email: email.toLowerCase(),
+          name,
+          phone,
+          whatsappOptIn: phone ? whatsappOptIn : false,
+          status: "pending",
+          confirmToken,
+          confirmSentAt: new Date(),
+        },
+      });
+
+      void sendConfirmationEmail(email, name, confirmToken).catch((error) => {
+        const message =
+          error instanceof Error ? error.message : "Unknown confirmation email error";
+        log("error", "sendConfirmationEmail threw in subscribe route", {
+          route: "api/subscribe",
+          errorMessage: message,
+        });
+      });
+
+      return NextResponse.json(
+        { message: "Please check your email to confirm your subscription." },
+        { status: 201 },
+      );
+    }
+
     await prisma.subscriber.create({
       data: {
         email: email.toLowerCase(),
@@ -110,6 +167,16 @@ export async function POST(request: Request) {
         whatsappOptIn: phone ? whatsappOptIn : false,
         status: "active",
       },
+    });
+
+    // Fire-and-forget welcome email; subscription should succeed even if this fails.
+    void sendWelcomeEmail({ email, name }).catch((error) => {
+      const message =
+        error instanceof Error ? error.message : "Unknown welcome email error";
+      log("error", "sendWelcomeEmail threw in subscribe route", {
+        route: "api/subscribe",
+        errorMessage: message,
+      });
     });
 
     return NextResponse.json(

@@ -4,6 +4,9 @@
  */
 
 const META_GRAPH_BASE = "https://graph.facebook.com/v18.0";
+// #region agent log
+function dbgWrite(label: string, obj: Record<string, unknown>) { console.error("[WA-DBG]", label, JSON.stringify(obj)); }
+// #endregion
 
 export interface SendTemplateResult {
   success: true;
@@ -36,6 +39,9 @@ export async function sendTemplateMeta(
     params;
 
   const toNumber = to.replace(/\D/g, "");
+  // #region agent log
+  dbgWrite('PHONE', {originalLast6:to.slice(-6),originalLen:to.length,strippedLen:toNumber.length,valid:toNumber.length>=10});
+  // #endregion
   if (!toNumber || toNumber.length < 10) {
     return { success: false, error: "Invalid recipient phone number." };
   }
@@ -77,6 +83,10 @@ export async function sendTemplateMeta(
       messages?: Array<{ id: string }>;
       error?: { message?: string; code?: number; error_data?: { details?: string } };
     };
+
+    // #region agent log
+    dbgWrite('META-RESPONSE', {httpStatus:res.status,ok:res.ok,errorCode:data.error?.code,errorMsg:data.error?.message,errorDetails:data.error?.error_data?.details,hasMessages:!!data.messages});
+    // #endregion
 
     if (!res.ok) {
       const message =

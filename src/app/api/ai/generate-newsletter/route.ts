@@ -1,17 +1,25 @@
 import { NextResponse } from "next/server";
 import { RateLimitError } from "openai";
 import { z } from "zod";
-import { generateNewsletterDraft, getOpenAIClientFallback } from "@/lib/ai";
+import {
+  generateNewsletterDraft,
+  getOpenAIClientFallback,
+  getOpenAIClient,
+} from "@/lib/ai";
+import { generateBannerImage } from "@/lib/ai-image";
 import { errorResponse, ERROR_CODES } from "@/lib/api/error-response";
 import { log } from "@/lib/logger";
 
 const BodySchema = z.object({
-  topic: z.string().min(1, "topic is required and must be a non-empty string"),
-  tone: z.string().min(1, "tone is required and must be a non-empty string"),
-  targetAudience: z
-    .string()
-    .min(1, "targetAudience is required and must be a non-empty string"),
+  topic: z.string().min(1, "topic is required"),
+  tone: z.string().min(1, "tone is required"),
+  targetAudience: z.string().min(1, "targetAudience is required"),
+  title: z.string().optional(),
   referenceLinks: z.array(z.string()).optional().default([]),
+  imageReferenceLinks: z.array(z.string()).optional().default([]),
+  videoReferenceLinks: z.array(z.string()).optional().default([]),
+  aiProvider: z.enum(["openai", "gemini", "claude"]).optional(),
+  aiModel: z.string().optional(),
 });
 
 export async function POST(request: Request) {
@@ -23,16 +31,70 @@ export async function POST(request: Request) {
       const message = typeof first === "string" ? first : "Invalid input.";
       return errorResponse(ERROR_CODES.VALIDATION_ERROR, message, 400);
     }
-    const { topic, tone, targetAudience, referenceLinks } = parsed.data;
+    const {
+      topic,
+      tone,
+      targetAudience,
+      title,
+      referenceLinks,
+      imageReferenceLinks,
+      videoReferenceLinks,
+    } = parsed.data;
 
     const result = await generateNewsletterDraft({
       topic,
       tone,
       targetAudience,
+      title,
       referenceLinks: referenceLinks.length > 0 ? referenceLinks : undefined,
+      imageReferenceLinks:
+        imageReferenceLinks.length > 0 ? imageReferenceLinks : undefined,
+      videoReferenceLinks:
+        videoReferenceLinks.length > 0 ? videoReferenceLinks : undefined,
     });
 
-    return NextResponse.json(result, { status: 200 });
+    // Generate AI images from imagePrompts (or fallback to title+description)
+    const generatedImages: string[] = [];
+    const promptsToUse =
+      (result.imagePrompts?.length ?? 0) > 0
+        ? result.imagePrompts!
+        : [
+            `${result.title}. ${result.description || result.body.slice(0, 150)}. Professional newsletter illustration, modern style.`,
+          ];
+
+    for (const prompt of promptsToUse.slice(0, 2)) {
+      const imgResult = await generateBannerImage(prompt);
+      if ("url" in imgResult) {
+        generatedImages.push(imgResult.url);
+      }
+    }
+
+    // Merge: generated images first, then user refs, then AI suggestions
+    const suggestedImages = [
+      ...generatedImages,
+      ...(result.suggestedImages ?? []),
+      ...(imageReferenceLinks.length > 0 && !result.suggestedImages?.length
+        ? imageReferenceLinks
+        : []),
+    ].filter(Boolean);
+
+    const suggestedVideos =
+      (result.suggestedVideos?.length ?? 0) > 0
+        ? result.suggestedVideos
+        : videoReferenceLinks.length > 0
+          ? videoReferenceLinks
+          : undefined;
+
+    return NextResponse.json(
+      {
+        ...result,
+        suggestedImages: suggestedImages.length > 0 ? suggestedImages : undefined,
+        suggestedVideos,
+        generatedImages:
+          generatedImages.length > 0 ? generatedImages : undefined,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     log("error", "AI generate-newsletter failed", {
@@ -68,7 +130,15 @@ export async function POST(request: Request) {
         if (fallbackClient) {
           try {
             const result = await generateNewsletterDraft(
-              { topic, tone, targetAudience, referenceLinks: referenceLinks.length > 0 ? referenceLinks : undefined },
+              {
+                topic,
+                tone,
+                targetAudience,
+                title,
+                referenceLinks: referenceLinks.length > 0 ? referenceLinks : undefined,
+                imageReferenceLinks: imageReferenceLinks?.length ? imageReferenceLinks : undefined,
+                videoReferenceLinks: videoReferenceLinks?.length ? videoReferenceLinks : undefined,
+              },
               fallbackClient,
             );
             return NextResponse.json(result, { status: 200 });
@@ -82,7 +152,7 @@ export async function POST(request: Request) {
         }
       }
       const quotaMessage = message.includes("GEMINI_QUOTA_EXCEEDED")
-        ? message.replace("GEMINI_QUOTA_EXCEEDED: ", "")
+        ? "You've reached the Gemini free tier limit for this model. Wait a bit and try again, or configure OPENAI_API_KEY in .env to use OpenAI as a fallback."
         : "Too many requests or quota exceeded. Wait a minute and try again, or check your plan at https://ai.google.dev/gemini-api/docs/rate-limits";
       return errorResponse(ERROR_CODES.AI_RATE_LIMIT, quotaMessage, 429);
     }

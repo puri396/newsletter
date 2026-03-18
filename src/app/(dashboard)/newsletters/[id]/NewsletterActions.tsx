@@ -9,15 +9,19 @@ interface NewsletterActionsProps {
   newsletterId: string;
   status: string;
   pendingSchedule: { id: string; sendAt: Date } | null;
+  whatsappConfigured?: boolean;
+  whatsappReach?: number;
 }
 
 export function NewsletterActions({
   newsletterId,
   status,
   pendingSchedule,
+  whatsappConfigured = false,
+  whatsappReach = 0,
 }: NewsletterActionsProps) {
   const router = useRouter();
-  const [loading, setLoading] = useState<"publish" | "schedule" | null>(null);
+  const [loading, setLoading] = useState<"publish" | "schedule" | "whatsapp" | null>(null);
   const [scheduleOpen, setScheduleOpen] = useState(false);
   const [scheduleValue, setScheduleValue] = useState("");
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -42,9 +46,49 @@ export function NewsletterActions({
         setMessage({ type: "error", text: getApiErrorMessage(data, "Failed to publish.") });
         return;
       }
+      const waSent = data.whatsappSent ?? 0;
+      const waFailed = data.whatsappFailed ?? 0;
       setMessage({
         type: "success",
-        text: `Sent to ${data.sent} subscriber(s).${data.failed ? ` ${data.failed} failed.` : ""}`,
+        text: `Sent to ${data.sent} subscriber(s).${data.failed ? ` ${data.failed} failed.` : ""}${
+          whatsappConfigured && (waSent > 0 || waFailed > 0)
+            ? ` WhatsApp: ${waSent} sent${waFailed > 0 ? `, ${waFailed} failed` : ""}.`
+            : ""
+        }`,
+      });
+      router.refresh();
+    } catch {
+      setMessage({ type: "error", text: "Request failed." });
+    } finally {
+      setLoading(null);
+    }
+  }
+
+  async function handleWhatsAppBroadcast() {
+    if (loading || !whatsappConfigured || whatsappReach === 0) return;
+    const ok = typeof window !== "undefined" && window.confirm(
+      "Send this newsletter link to all WhatsApp-opted-in subscribers?",
+    );
+    if (!ok) return;
+    setMessage(null);
+    setLoading("whatsapp");
+    try {
+      const res = await fetch(`/api/newsletters/${newsletterId}/whatsapp-broadcast`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setMessage({
+          type: "error",
+          text: getApiErrorMessage(data, "WhatsApp broadcast failed."),
+        });
+        return;
+      }
+      const sent = data.sent ?? 0;
+      const failed = data.failed ?? 0;
+      setMessage({
+        type: "success",
+        text: `WhatsApp: sent to ${sent} subscriber(s).${failed > 0 ? ` ${failed} failed.` : ""}`,
       });
       router.refresh();
     } catch {
@@ -165,6 +209,16 @@ export function NewsletterActions({
               Cancel schedule
             </button>
           </span>
+        ) : null}
+        {whatsappConfigured ? (
+          <button
+            type="button"
+            onClick={handleWhatsAppBroadcast}
+            disabled={!!loading || whatsappReach === 0}
+            className="rounded-lg border border-emerald-700/60 bg-emerald-950/40 px-3 py-2 text-sm font-medium text-emerald-300 hover:bg-emerald-900/40 disabled:opacity-50 disabled:pointer-events-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-zinc-950"
+          >
+            {loading === "whatsapp" ? "Sending on WhatsApp…" : "Broadcast on WhatsApp"}
+          </button>
         ) : null}
         <button
           type="button"

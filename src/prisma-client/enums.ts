@@ -12,13 +12,25 @@
 export const NewsletterStatus = {
   draft: 'draft',
   scheduled: 'scheduled',
-  published: 'published'
+  published: 'published',
+  archived: 'archived'
 } as const
 
 export type NewsletterStatus = (typeof NewsletterStatus)[keyof typeof NewsletterStatus]
 
 
+export const ContentType = {
+  newsletter: 'newsletter',
+  blog: 'blog',
+  image: 'image',
+  video: 'video'
+} as const
+
+export type ContentType = (typeof ContentType)[keyof typeof ContentType]
+
+
 export const SubscriberStatus = {
+  pending: 'pending',
   active: 'active',
   unsubscribed: 'unsubscribed'
 } as const

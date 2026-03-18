@@ -5,6 +5,7 @@ import { EmptyState, StatusBadge } from "@/components/ui";
 import { SubscriberBulkImport } from "./SubscriberBulkImport";
 import { SubscriberSearchForm } from "./SubscriberSearchForm";
 import { SubscriberUnsubscribeButton } from "./SubscriberUnsubscribeButton";
+import { SubscriberWhatsAppOptInToggle } from "./SubscriberWhatsAppOptInToggle";
 
 const PAGE_SIZE = 20;
 
@@ -59,7 +60,8 @@ function parsePage(value: string | undefined): number {
 
 export default async function SubscribersPage({ searchParams }: SubscribersPageProps) {
   const params = await searchParams;
-  const statusFilter = resolveStatusFilter(params?.status);
+  const rawStatus = params?.status ?? "active";
+  const statusFilter = resolveStatusFilter(rawStatus);
   const q = params?.q?.trim() ?? "";
   const sort = params?.sort === "createdAt_asc" ? "asc" : "desc";
   const page = parsePage(params?.page);
@@ -130,6 +132,8 @@ export default async function SubscribersPage({ searchParams }: SubscribersPageP
             <tr>
               <th scope="col" className="px-4 py-2 text-left font-medium text-zinc-400">Name</th>
               <th scope="col" className="px-4 py-2 text-left font-medium text-zinc-400">Email</th>
+              <th scope="col" className="px-4 py-2 text-left font-medium text-zinc-400">Phone</th>
+              <th scope="col" className="px-4 py-2 text-left font-medium text-zinc-400">WhatsApp</th>
               <th scope="col" className="px-4 py-2 text-left font-medium text-zinc-400">Status</th>
               <th scope="col" className="px-4 py-2 text-left font-medium text-zinc-400">Created</th>
               <th scope="col" className="px-4 py-2 text-left font-medium text-zinc-400">Unsubscribed at</th>
@@ -139,7 +143,7 @@ export default async function SubscribersPage({ searchParams }: SubscribersPageP
           <tbody className="divide-y divide-zinc-800">
             {subscribers.length === 0 ? (
               <tr>
-                <td colSpan={6} className="p-0">
+                <td colSpan={8} className="p-0">
                   {dbError ? (
                     <p className="px-4 py-6 text-center text-sm text-zinc-500">
                       Unable to load data. Please try again.
@@ -168,6 +172,12 @@ export default async function SubscribersPage({ searchParams }: SubscribersPageP
                     {subscriber.name ?? "—"}
                   </td>
                   <td className="px-4 py-3 align-top text-zinc-100">{subscriber.email}</td>
+                  <td className="px-4 py-3 align-top text-zinc-400">
+                    {subscriber.phone ?? "—"}
+                  </td>
+                  <td className="px-4 py-3 align-top text-zinc-400">
+                    {subscriber.whatsappOptIn ? "Yes" : "No"}
+                  </td>
                   <td className="px-4 py-3 align-top">
                     <StatusBadge status={subscriber.status} />
                   </td>
@@ -180,7 +190,11 @@ export default async function SubscribersPage({ searchParams }: SubscribersPageP
                       : "—"}
                   </td>
                   <td className="px-4 py-3 align-top">
-                    <SubscriberRowActions subscriberId={subscriber.id} status={subscriber.status} />
+                    <SubscriberRowActions
+                      subscriberId={subscriber.id}
+                      status={subscriber.status}
+                      whatsappOptIn={subscriber.whatsappOptIn}
+                    />
                   </td>
                 </tr>
               ))
@@ -230,15 +244,23 @@ export default async function SubscribersPage({ searchParams }: SubscribersPageP
 function SubscriberRowActions({
   subscriberId,
   status,
+  whatsappOptIn,
 }: {
   subscriberId: string;
   status: string;
+  whatsappOptIn: boolean;
 }) {
   return (
-    <SubscriberUnsubscribeButton
-      subscriberId={subscriberId}
-      status={status}
-    />
+    <div className="flex flex-wrap items-center gap-2">
+      <SubscriberUnsubscribeButton
+        subscriberId={subscriberId}
+        status={status}
+      />
+      <SubscriberWhatsAppOptInToggle
+        subscriberId={subscriberId}
+        whatsappOptIn={whatsappOptIn}
+      />
+    </div>
   );
 }
 

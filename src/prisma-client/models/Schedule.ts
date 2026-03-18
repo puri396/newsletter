@@ -32,6 +32,7 @@ export type ScheduleMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   errorMessage: string | null
+  deletedAt: Date | null
 }
 
 export type ScheduleMaxAggregateOutputType = {
@@ -42,6 +43,7 @@ export type ScheduleMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   errorMessage: string | null
+  deletedAt: Date | null
 }
 
 export type ScheduleCountAggregateOutputType = {
@@ -52,6 +54,7 @@ export type ScheduleCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   errorMessage: number
+  deletedAt: number
   _all: number
 }
 
@@ -64,6 +67,7 @@ export type ScheduleMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   errorMessage?: true
+  deletedAt?: true
 }
 
 export type ScheduleMaxAggregateInputType = {
@@ -74,6 +78,7 @@ export type ScheduleMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   errorMessage?: true
+  deletedAt?: true
 }
 
 export type ScheduleCountAggregateInputType = {
@@ -84,6 +89,7 @@ export type ScheduleCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   errorMessage?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -167,6 +173,7 @@ export type ScheduleGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   errorMessage: string | null
+  deletedAt: Date | null
   _count: ScheduleCountAggregateOutputType | null
   _min: ScheduleMinAggregateOutputType | null
   _max: ScheduleMaxAggregateOutputType | null
@@ -198,6 +205,7 @@ export type ScheduleWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Schedule"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Schedule"> | Date | string
   errorMessage?: Prisma.StringNullableFilter<"Schedule"> | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Schedule"> | Date | string | null
   newsletter?: Prisma.XOR<Prisma.NewsletterScalarRelationFilter, Prisma.NewsletterWhereInput>
 }
 
@@ -209,6 +217,7 @@ export type ScheduleOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   errorMessage?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   newsletter?: Prisma.NewsletterOrderByWithRelationInput
 }
 
@@ -223,6 +232,7 @@ export type ScheduleWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Schedule"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Schedule"> | Date | string
   errorMessage?: Prisma.StringNullableFilter<"Schedule"> | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Schedule"> | Date | string | null
   newsletter?: Prisma.XOR<Prisma.NewsletterScalarRelationFilter, Prisma.NewsletterWhereInput>
 }, "id">
 
@@ -234,6 +244,7 @@ export type ScheduleOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   errorMessage?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ScheduleCountOrderByAggregateInput
   _max?: Prisma.ScheduleMaxOrderByAggregateInput
   _min?: Prisma.ScheduleMinOrderByAggregateInput
@@ -250,6 +261,7 @@ export type ScheduleScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Schedule"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Schedule"> | Date | string
   errorMessage?: Prisma.StringNullableWithAggregatesFilter<"Schedule"> | string | null
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Schedule"> | Date | string | null
 }
 
 export type ScheduleCreateInput = {
@@ -259,6 +271,7 @@ export type ScheduleCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   errorMessage?: string | null
+  deletedAt?: Date | string | null
   newsletter: Prisma.NewsletterCreateNestedOneWithoutSchedulesInput
 }
 
@@ -270,6 +283,7 @@ export type ScheduleUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   errorMessage?: string | null
+  deletedAt?: Date | string | null
 }
 
 export type ScheduleUpdateInput = {
@@ -279,6 +293,7 @@ export type ScheduleUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   newsletter?: Prisma.NewsletterUpdateOneRequiredWithoutSchedulesNestedInput
 }
 
@@ -290,6 +305,7 @@ export type ScheduleUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ScheduleCreateManyInput = {
@@ -300,6 +316,7 @@ export type ScheduleCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   errorMessage?: string | null
+  deletedAt?: Date | string | null
 }
 
 export type ScheduleUpdateManyMutationInput = {
@@ -309,6 +326,7 @@ export type ScheduleUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ScheduleUncheckedUpdateManyInput = {
@@ -319,6 +337,7 @@ export type ScheduleUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ScheduleListRelationFilter = {
@@ -339,6 +358,7 @@ export type ScheduleCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   errorMessage?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ScheduleMaxOrderByAggregateInput = {
@@ -349,6 +369,7 @@ export type ScheduleMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   errorMessage?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ScheduleMinOrderByAggregateInput = {
@@ -359,6 +380,7 @@ export type ScheduleMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   errorMessage?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type ScheduleCreateNestedManyWithoutNewsletterInput = {
@@ -414,6 +436,7 @@ export type ScheduleCreateWithoutNewsletterInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   errorMessage?: string | null
+  deletedAt?: Date | string | null
 }
 
 export type ScheduleUncheckedCreateWithoutNewsletterInput = {
@@ -423,6 +446,7 @@ export type ScheduleUncheckedCreateWithoutNewsletterInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   errorMessage?: string | null
+  deletedAt?: Date | string | null
 }
 
 export type ScheduleCreateOrConnectWithoutNewsletterInput = {
@@ -462,6 +486,7 @@ export type ScheduleScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Schedule"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Schedule"> | Date | string
   errorMessage?: Prisma.StringNullableFilter<"Schedule"> | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Schedule"> | Date | string | null
 }
 
 export type ScheduleCreateManyNewsletterInput = {
@@ -471,6 +496,7 @@ export type ScheduleCreateManyNewsletterInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   errorMessage?: string | null
+  deletedAt?: Date | string | null
 }
 
 export type ScheduleUpdateWithoutNewsletterInput = {
@@ -480,6 +506,7 @@ export type ScheduleUpdateWithoutNewsletterInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ScheduleUncheckedUpdateWithoutNewsletterInput = {
@@ -489,6 +516,7 @@ export type ScheduleUncheckedUpdateWithoutNewsletterInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ScheduleUncheckedUpdateManyWithoutNewsletterInput = {
@@ -498,6 +526,7 @@ export type ScheduleUncheckedUpdateManyWithoutNewsletterInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -510,6 +539,7 @@ export type ScheduleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   createdAt?: boolean
   updatedAt?: boolean
   errorMessage?: boolean
+  deletedAt?: boolean
   newsletter?: boolean | Prisma.NewsletterDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["schedule"]>
 
@@ -521,6 +551,7 @@ export type ScheduleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   createdAt?: boolean
   updatedAt?: boolean
   errorMessage?: boolean
+  deletedAt?: boolean
   newsletter?: boolean | Prisma.NewsletterDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["schedule"]>
 
@@ -532,6 +563,7 @@ export type ScheduleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   createdAt?: boolean
   updatedAt?: boolean
   errorMessage?: boolean
+  deletedAt?: boolean
   newsletter?: boolean | Prisma.NewsletterDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["schedule"]>
 
@@ -543,9 +575,10 @@ export type ScheduleSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   errorMessage?: boolean
+  deletedAt?: boolean
 }
 
-export type ScheduleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "newsletterId" | "sendAt" | "status" | "createdAt" | "updatedAt" | "errorMessage", ExtArgs["result"]["schedule"]>
+export type ScheduleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "newsletterId" | "sendAt" | "status" | "createdAt" | "updatedAt" | "errorMessage" | "deletedAt", ExtArgs["result"]["schedule"]>
 export type ScheduleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   newsletter?: boolean | Prisma.NewsletterDefaultArgs<ExtArgs>
 }
@@ -569,6 +602,7 @@ export type $SchedulePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     createdAt: Date
     updatedAt: Date
     errorMessage: string | null
+    deletedAt: Date | null
   }, ExtArgs["result"]["schedule"]>
   composites: {}
 }
@@ -1000,6 +1034,7 @@ export interface ScheduleFieldRefs {
   readonly createdAt: Prisma.FieldRef<"Schedule", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Schedule", 'DateTime'>
   readonly errorMessage: Prisma.FieldRef<"Schedule", 'String'>
+  readonly deletedAt: Prisma.FieldRef<"Schedule", 'DateTime'>
 }
     
 

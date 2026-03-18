@@ -10,7 +10,7 @@ import { getBaseUrl } from "./config";
  */
 export function buildNewsletterUrl(newsletterId: string): string {
   const base = getBaseUrl();
-  return `${base}/newsletters/${encodeURIComponent(newsletterId)}`;
+  return `${base}/epic/view/${encodeURIComponent(newsletterId)}`;
 }
 
 /**

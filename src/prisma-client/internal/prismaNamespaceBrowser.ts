@@ -55,7 +55,9 @@ export const ModelName = {
   Schedule: 'Schedule',
   EmailLog: 'EmailLog',
   Tag: 'Tag',
-  NewsletterTag: 'NewsletterTag'
+  NewsletterTag: 'NewsletterTag',
+  PasswordResetToken: 'PasswordResetToken',
+  Media: 'Media'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -79,6 +81,9 @@ export const UserScalarFieldEnum = {
   email: 'email',
   hashedPassword: 'hashedPassword',
   name: 'name',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  image: 'image',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -98,8 +103,16 @@ export const NewsletterScalarFieldEnum = {
   imagePrompts: 'imagePrompts',
   videoScript: 'videoScript',
   bannerImageUrl: 'bannerImageUrl',
+  logoUrl: 'logoUrl',
+  contentType: 'contentType',
+  shortTitle: 'shortTitle',
+  slug: 'slug',
+  publishedAt: 'publishedAt',
+  authorName: 'authorName',
+  epicMetadata: 'epicMetadata',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   authorId: 'authorId'
 } as const
 
@@ -116,6 +129,8 @@ export const SubscriberScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   unsubscribedAt: 'unsubscribedAt',
+  confirmToken: 'confirmToken',
+  confirmSentAt: 'confirmSentAt',
   meta: 'meta'
 } as const
 
@@ -129,7 +144,8 @@ export const ScheduleScalarFieldEnum = {
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  errorMessage: 'errorMessage'
+  errorMessage: 'errorMessage',
+  deletedAt: 'deletedAt'
 } as const
 
 export type ScheduleScalarFieldEnum = (typeof ScheduleScalarFieldEnum)[keyof typeof ScheduleScalarFieldEnum]
@@ -148,7 +164,8 @@ export const EmailLogScalarFieldEnum = {
   openedAt: 'openedAt',
   clickedAt: 'clickedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type EmailLogScalarFieldEnum = (typeof EmailLogScalarFieldEnum)[keyof typeof EmailLogScalarFieldEnum]
@@ -169,6 +186,31 @@ export const NewsletterTagScalarFieldEnum = {
 } as const
 
 export type NewsletterTagScalarFieldEnum = (typeof NewsletterTagScalarFieldEnum)[keyof typeof NewsletterTagScalarFieldEnum]
+
+
+export const PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
+
+
+export const MediaScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  mimeType: 'mimeType',
+  size: 'size',
+  dataUrl: 'dataUrl',
+  altText: 'altText',
+  createdAt: 'createdAt'
+} as const
+
+export type MediaScalarFieldEnum = (typeof MediaScalarFieldEnum)[keyof typeof MediaScalarFieldEnum]
 
 
 export const SortOrder = {

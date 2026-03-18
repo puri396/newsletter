@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { sendNewsletterEmail } from "@/lib/email";
+import { errorResponse, ERROR_CODES } from "@/lib/api/error-response";
 
 interface SendBody {
   subscriberId?: string;
@@ -16,18 +17,20 @@ export async function POST(
   try {
     const { id: newsletterId } = await context.params;
     if (!newsletterId) {
-      return NextResponse.json(
-        { error: "Newsletter ID is required." },
-        { status: 400 },
+      return errorResponse(
+        ERROR_CODES.VALIDATION_ERROR,
+        "Newsletter ID is required.",
+        400,
       );
     }
 
-    const body = (await request.json()).catch(() => ({})) as SendBody;
+    const body = (await request.json().catch(() => ({}))) as SendBody;
     const subscriberId = typeof body.subscriberId === "string" ? body.subscriberId.trim() : undefined;
     if (!subscriberId) {
-      return NextResponse.json(
-        { error: "subscriberId is required in body." },
-        { status: 400 },
+      return errorResponse(
+        ERROR_CODES.VALIDATION_ERROR,
+        "subscriberId is required in body.",
+        400,
       );
     }
 
@@ -35,9 +38,10 @@ export async function POST(
       where: { id: newsletterId },
     });
     if (!newsletter) {
-      return NextResponse.json(
-        { error: "Newsletter not found." },
-        { status: 404 },
+      return errorResponse(
+        ERROR_CODES.NOT_FOUND,
+        "Newsletter not found.",
+        404,
       );
     }
 
@@ -45,15 +49,17 @@ export async function POST(
       where: { id: subscriberId },
     });
     if (!subscriber) {
-      return NextResponse.json(
-        { error: "Subscriber not found." },
-        { status: 404 },
+      return errorResponse(
+        ERROR_CODES.NOT_FOUND,
+        "Subscriber not found.",
+        404,
       );
     }
     if (subscriber.status !== "active") {
-      return NextResponse.json(
-        { error: "Subscriber is not active." },
-        { status: 400 },
+      return errorResponse(
+        ERROR_CODES.VALIDATION_ERROR,
+        "Subscriber is not active.",
+        400,
       );
     }
 
@@ -73,9 +79,10 @@ export async function POST(
     });
 
     if (!result.success) {
-      return NextResponse.json(
-        { success: false, error: result.error },
-        { status: 502 },
+      return errorResponse(
+        ERROR_CODES.EMAIL_FAILED,
+        result.error || "Failed to send newsletter email.",
+        502,
       );
     }
 
@@ -84,9 +91,10 @@ export async function POST(
       { status: 200 },
     );
   } catch {
-    return NextResponse.json(
-      { error: "Failed to send newsletter." },
-      { status: 500 },
+    return errorResponse(
+      ERROR_CODES.DATABASE_ERROR,
+      "Failed to send newsletter.",
+      500,
     );
   }
 }

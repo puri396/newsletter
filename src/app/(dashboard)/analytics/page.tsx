@@ -138,8 +138,8 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
                     <td colSpan={8} className="p-0">
                       <EmptyState
                         title="No email data yet"
-                        description="Send a newsletter to see delivery and engagement metrics here."
-                        action={{ label: "Send a newsletter", href: "/newsletters" }}
+                        description="Send a newsletter from EPIC to see delivery and engagement metrics here."
+                        action={{ label: "Open Content Studio", href: "/epic" }}
                       />
                     </td>
                   </tr>
@@ -148,7 +148,7 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
                     <tr key={m.newsletterId} className="hover:bg-zinc-900/40">
                       <td className="px-4 py-3 text-zinc-100">
                         <Link
-                          href={`/newsletters/${m.newsletterId}`}
+                          href={`/epic/view/${m.newsletterId}`}
                           className="hover:underline"
                         >
                           {m.title}
@@ -263,8 +263,8 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
             {best.length === 0 ? (
               <EmptyState
                 title="No data yet"
-                description="Send and deliver newsletters to see top performers here."
-                action={{ label: "View Newsletters", href: "/newsletters" }}
+                description="Send and deliver newsletters from EPIC to see top performers here."
+                action={{ label: "Open Content Studio", href: "/epic" }}
               />
             ) : (
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -277,7 +277,7 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
                       #{i + 1}
                     </div>
                     <Link
-                      href={`/newsletters/${item.newsletterId}`}
+                      href={`/epic/view/${item.newsletterId}`}
                       className="font-medium text-zinc-100 hover:underline block truncate"
                     >
                       {item.title}

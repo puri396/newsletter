@@ -72,10 +72,13 @@ export function AnalyticsCharts({
                     borderRadius: "6px",
                   }}
                   labelStyle={{ color: "#d4d4d8" }}
-                  formatter={(value: number, name: string) => [
-                    name === "openRate" ? formatPct(value) : value,
-                    name === "openRate" ? "Open rate" : name === "opens" ? "Opens" : "Delivered",
-                  ]}
+                  formatter={(value, name) => {
+                    const num = typeof value === "number" ? value : 0;
+                    return [
+                      name === "openRate" ? formatPct(num) : num,
+                      name === "openRate" ? "Open rate" : name === "opens" ? "Opens" : "Delivered",
+                    ];
+                  }}
                   labelFormatter={(label) => `Period: ${label}`}
                 />
                 <Legend

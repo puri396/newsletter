@@ -1,4 +1,4 @@
-import { LoadingSkeletonCards, LoadingSkeleton } from "@/components/ui";
+import { LoadingSkeleton } from "@/components/ui";
 
 export default function DashboardLoading() {
   return (

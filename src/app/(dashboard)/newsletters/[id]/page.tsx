@@ -3,7 +3,10 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { ContentRepurposingPanel } from "@/components/newsletter";
 import { StatusBadge } from "@/components/ui";
+import { ContentRenderer } from "@/components/content/ContentRenderer";
 import { NewsletterActions } from "./NewsletterActions";
+import { isWhatsAppConfigured } from "@/lib/whatsapp";
+import { getWhatsAppRecipientCount } from "@/lib/subscribers/whatsapp";
 
 interface NewsletterDetailPageProps {
   params: Promise<{ id: string }>;
@@ -16,7 +19,14 @@ export default async function NewsletterDetailPage({
 
   let newsletter: Awaited<
     ReturnType<typeof prisma.newsletter.findUnique<{
-      include: { schedules: true };
+      where: { id: string };
+      include: {
+        schedules: {
+          where: { status: "pending" };
+          orderBy: { sendAt: "asc" };
+          take: 1;
+        };
+      };
     }>>
   > = null;
   try {
@@ -38,6 +48,9 @@ export default async function NewsletterDetailPage({
     notFound();
   }
 
+  const whatsappConfigured = isWhatsAppConfigured();
+  const whatsappReach = whatsappConfigured ? await getWhatsAppRecipientCount() : 0;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2 text-sm text-zinc-400">
@@ -45,7 +58,7 @@ export default async function NewsletterDetailPage({
           href="/newsletters"
           className="hover:text-zinc-100"
         >
-          Newsletters
+          Create Newsletter
         </Link>
         <span aria-hidden>/</span>
         <span className="text-zinc-500 truncate max-w-[200px] lg:max-w-md" title={newsletter.subject}>
@@ -77,14 +90,25 @@ export default async function NewsletterDetailPage({
             newsletterId={newsletter.id}
             status={newsletter.status}
             pendingSchedule={newsletter.schedules[0] ?? null}
+            whatsappConfigured={whatsappConfigured}
+            whatsappReach={whatsappReach}
           />
         </div>
-        <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-3">
-          <p className="text-xs font-medium text-zinc-400 mb-2">Body</p>
-          <div className="text-sm text-zinc-200 whitespace-pre-wrap">
-            {newsletter.body || "—"}
-          </div>
-        </div>
+
+        <ContentRenderer
+          contentType={newsletter.contentType ?? "newsletter"}
+          title={newsletter.subject}
+          description={newsletter.description}
+          body={newsletter.body}
+          tags={newsletter.tags}
+          bannerImageUrl={newsletter.bannerImageUrl}
+          logoUrl={newsletter.logoUrl}
+          templateStyle={
+            (newsletter.epicMetadata as { templateStyle?: string } | null)
+              ?.templateStyle as any
+          }
+          mode="full"
+        />
       </div>
 
       <ContentRepurposingPanel

@@ -57,6 +57,14 @@ export function StatusBadge({ status }: StatusBadgeProps) {
         Unsubscribed
       </span>
     );
+  if (normalized === "archived")
+    return (
+      <span
+        className={`${base} bg-zinc-800/60 text-zinc-500 ring-zinc-600`}
+      >
+        Archived
+      </span>
+    );
   if (normalized === "sent" || normalized === "failed")
     return (
       <span
@@ -65,6 +73,59 @@ export function StatusBadge({ status }: StatusBadgeProps) {
         {label}
       </span>
     );
+
+  return (
+    <span className={`${base} bg-zinc-900/60 text-zinc-300 ring-zinc-700`}>
+      {label}
+    </span>
+  );
+}
+
+interface ContentTypeBadgeProps {
+  type: string;
+}
+
+export function ContentTypeBadge({ type }: ContentTypeBadgeProps) {
+  const normalized = type.toLowerCase();
+  const label = type.charAt(0).toUpperCase() + type.slice(1);
+
+  if (normalized === "newsletter") {
+    return (
+      <span
+        className={`${base} bg-blue-900/40 text-blue-300 ring-blue-700`}
+      >
+        {label}
+      </span>
+    );
+  }
+
+  if (normalized === "blog") {
+    return (
+      <span
+        className={`${base} bg-purple-900/40 text-purple-300 ring-purple-700`}
+      >
+        {label}
+      </span>
+    );
+  }
+
+  if (normalized === "image") {
+    return (
+      <span
+        className={`${base} bg-orange-900/40 text-orange-300 ring-orange-700`}
+      >
+        {label}
+      </span>
+    );
+  }
+
+  if (normalized === "video") {
+    return (
+      <span className={`${base} bg-teal-900/40 text-teal-300 ring-teal-700`}>
+        {label}
+      </span>
+    );
+  }
 
   return (
     <span className={`${base} bg-zinc-900/60 text-zinc-300 ring-zinc-700`}>

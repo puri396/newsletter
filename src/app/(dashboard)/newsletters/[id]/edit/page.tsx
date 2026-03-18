@@ -28,7 +28,7 @@ export default async function EditNewsletterPage({
     <div className="space-y-6">
       <div className="flex items-center gap-2 text-sm text-zinc-400">
         <Link href="/newsletters" className="hover:text-zinc-100">
-          Newsletters
+          Create Newsletter
         </Link>
         <span aria-hidden>/</span>
         <Link
@@ -52,6 +52,10 @@ export default async function EditNewsletterPage({
           newsletterId: newsletter.id,
           bannerImageUrl: newsletter.bannerImageUrl,
         }}
+        previewStyle={
+          (newsletter.epicMetadata as { templateStyle?: string } | null)
+            ?.templateStyle as any
+        }
       />
     </div>
   );

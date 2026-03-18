@@ -1,4 +1,4 @@
-import { LoadingSkeletonCards, LoadingSkeletonTable } from "@/components/ui";
+import { LoadingSkeletonTable } from "@/components/ui";
 
 export default function AnalyticsLoading() {
   return (

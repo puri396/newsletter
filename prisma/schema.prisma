@@ -19,10 +19,21 @@ enum NewsletterStatus {
   draft
   scheduled
   published
+  archived
+}
+
+/// Content type for EPIC (newsletter, blog, image, video).
+enum ContentType {
+  newsletter
+  blog
+  image
+  video
 }
 
 /// Status of a subscriber.
 enum SubscriberStatus {
+  /// Pending double opt-in confirmation (if DOUBLE_OPT_IN=true).
+  pending
   active
   unsubscribed
 }
@@ -48,12 +59,16 @@ enum EmailLogStatus {
 model User {
   id             String   @id @default(uuid())
   email          String   @unique
-  hashedPassword String
+  hashedPassword String?
   name           String?
+  firstName      String?
+  lastName       String?
+  image          String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  newsletters    Newsletter[]
+  newsletters         Newsletter[]
+  passwordResetTokens PasswordResetToken[]
 }
 
 model Newsletter {
@@ -70,8 +85,23 @@ model Newsletter {
   videoScript  Json?
   /// Optional banner image URL (e.g. from AI generation). May be temporary; production may re-host.
   bannerImageUrl String?
+  /// Optional logo URL shown in the email header and preview.
+  logoUrl        String?
+  /// EPIC content type (newsletter, blog, image, video). Null = legacy newsletter.
+  contentType  ContentType?
+  /// Short title for display in lists.
+  shortTitle   String?
+  /// URL-friendly slug for public blog view. Auto-generated from subject when contentType=blog.
+  slug         String?  @unique
+  /// When content was published (if status is published).
+  publishedAt  DateTime?
+  /// Denormalized author name for display.
+  authorName   String?
+  /// EPIC-specific metadata (tone, hashtags, socialShare, etc.).
+  epicMetadata Json?
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
+  deletedAt    DateTime?
 
   authorId     String?
   author       User?             @relation(fields: [authorId], references: [id])
@@ -81,6 +111,10 @@ model Newsletter {
   newsletterTags NewsletterTag[]
 
   @@index([status, createdAt(sort: Desc)], map: "idx_newsletter_status_createdAt")
+  @@index([contentType], map: "idx_newsletter_contentType")
+  @@index([deletedAt], map: "idx_newsletter_deletedAt")
+  @@index([contentType, status, createdAt(sort: Desc)], map: "idx_newsletter_contentType_status_createdAt")
+  @@index([slug], map: "idx_newsletter_slug")
 }
 
 /// Newsletter subscriber. Email is required; phone is optional and used for WhatsApp when whatsappOptIn is true.
@@ -97,6 +131,10 @@ model Subscriber {
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   unsubscribedAt DateTime?
+  /// When set, the subscriber has not yet confirmed their email. Token is sent in confirmation link.
+  confirmToken   String?  @unique
+  /// Timestamp when the double opt-in confirmation email was sent.
+  confirmSentAt  DateTime?
   /// Arbitrary metadata such as source, custom tags, etc.
   meta           Json?
 
@@ -104,6 +142,7 @@ model Subscriber {
 
   @@index([status], map: "idx_subscriber_status")
   @@index([createdAt(sort: Desc)], map: "idx_subscriber_createdAt")
+  @@index([confirmToken], map: "idx_subscriber_confirmToken")
 }
 
 model Schedule {
@@ -114,6 +153,7 @@ model Schedule {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   errorMessage String?
+  deletedAt    DateTime?
 
   newsletter   Newsletter     @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
 
@@ -134,6 +174,7 @@ model EmailLog {
   clickedAt         DateTime?
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
+  deletedAt         DateTime?
 
   newsletter        Newsletter  @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
   subscriber        Subscriber  @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
@@ -161,5 +202,34 @@ model NewsletterTag {
   tag          Tag        @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([newsletterId, tagId])
+}
+
+/// Time-limited token used for password reset emails.
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token], map: "idx_password_reset_token")
+  @@index([userId], map: "idx_password_reset_userId")
+}
+
+/// Uploaded media assets (images). Files are stored as base64 data URLs.
+model Media {
+  id        String   @id @default(uuid())
+  name      String
+  mimeType  String
+  size      Int
+  dataUrl   String
+  /// AI-generated or manually set descriptive alt text for accessibility and SEO.
+  altText   String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt(sort: Desc)], map: "idx_media_createdAt")
 }
 

@@ -8,13 +8,30 @@ export const runtime = "nodejs";
 
 const statusEnum = z.enum(["draft", "scheduled", "published"]);
 
+const SeoMetaSchema = z.object({
+  title: z.string().optional(),
+  description: z.string().optional(),
+  focusKeyword: z.string().optional(),
+  keywords: z.array(z.string()).optional(),
+  searchIntent: z.string().optional(),
+  relatedQuestions: z.array(z.string()).optional(),
+});
+
 const PatchBodySchema = z.object({
   subject: z.string().min(1).optional(),
   body: z.string().min(1).optional(),
   description: z.string().optional().nullable(),
   status: statusEnum.optional(),
   tags: z.array(z.string()).optional(),
-  bannerImageUrl: z.union([z.string().url(), z.null()]).optional(),
+  bannerImageUrl: z.union([z.string().min(1), z.null()]).optional(),
+  logoUrl: z.union([z.string().min(1), z.null()]).optional(),
+  contentType: z.enum(["newsletter", "blog", "image", "video"]).optional(),
+  /** Partial SEO metadata to merge into epicMetadata.seo */
+  epicMetadataSeo: SeoMetaSchema.optional(),
+  /** Optional template style to persist for consistent rendering */
+  epicMetadataTemplateStyle: z
+    .enum(["infographicBlue", "posterDark", "formalLetter"])
+    .optional(),
 });
 
 export async function PATCH(
@@ -52,6 +69,22 @@ export async function PATCH(
     if (parsed.data.status !== undefined) data.status = parsed.data.status;
     if (parsed.data.tags !== undefined) data.tags = parsed.data.tags;
     if (parsed.data.bannerImageUrl !== undefined) data.bannerImageUrl = parsed.data.bannerImageUrl;
+    if (parsed.data.logoUrl !== undefined) data.logoUrl = parsed.data.logoUrl;
+    if (parsed.data.contentType !== undefined) data.contentType = parsed.data.contentType;
+    if (parsed.data.epicMetadataSeo !== undefined || parsed.data.epicMetadataTemplateStyle !== undefined) {
+      const current = (newsletter.epicMetadata as Record<string, unknown> | null) ?? {};
+      data.epicMetadata = {
+        ...current,
+        seo:
+          parsed.data.epicMetadataSeo !== undefined
+            ? parsed.data.epicMetadataSeo
+            : (current.seo as unknown),
+        templateStyle:
+          parsed.data.epicMetadataTemplateStyle !== undefined
+            ? parsed.data.epicMetadataTemplateStyle
+            : (current.templateStyle as unknown),
+      };
+    }
 
     const updated = await prisma.newsletter.update({
       where: { id },
@@ -75,9 +108,10 @@ export async function DELETE(
   try {
     const { id } = await context.params;
     if (!id) {
-      return NextResponse.json(
-        { error: "Newsletter ID is required." },
-        { status: 400 },
+      return errorResponse(
+        ERROR_CODES.VALIDATION_ERROR,
+        "Newsletter ID is required.",
+        400,
       );
     }
 
@@ -85,9 +119,10 @@ export async function DELETE(
       where: { id },
     });
     if (!newsletter) {
-      return NextResponse.json(
-        { error: "Newsletter not found." },
-        { status: 404 },
+      return errorResponse(
+        ERROR_CODES.NOT_FOUND,
+        "Newsletter not found.",
+        404,
       );
     }
 
@@ -97,9 +132,10 @@ export async function DELETE(
 
     return new NextResponse(null, { status: 204 });
   } catch {
-    return NextResponse.json(
-      { error: "Failed to delete newsletter." },
-      { status: 500 },
+    return errorResponse(
+      ERROR_CODES.DATABASE_ERROR,
+      "Failed to delete newsletter.",
+      500,
     );
   }
 }

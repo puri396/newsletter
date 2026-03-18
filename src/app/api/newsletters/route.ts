@@ -12,6 +12,16 @@ const CreateBodySchema = z.object({
   description: z.string().optional(),
   status: statusEnum.optional().default("draft"),
   tags: z.array(z.string()).optional().default([]),
+  contentType: z.enum(["newsletter", "blog", "image", "video"]).optional().default("newsletter"),
+  bannerImageUrl: z.union([z.string().min(1), z.null()]).optional(),
+  logoUrl: z.union([z.string().min(1), z.null()]).optional(),
+  epicMetadata: z
+    .object({
+      templateStyle: z
+        .enum(["infographicBlue", "posterDark", "formalLetter"])
+        .optional(),
+    })
+    .optional(),
 });
 
 export async function GET(request: Request) {
@@ -58,7 +68,8 @@ export async function POST(request: Request) {
       const message = typeof first === "string" ? first : "Invalid input.";
       return errorResponse(ERROR_CODES.VALIDATION_ERROR, message, 400);
     }
-    const { subject, body, description, status, tags } = parsed.data;
+    const { subject, body, description, status, tags, contentType, bannerImageUrl, logoUrl, epicMetadata } =
+      parsed.data;
 
     const created = await prisma.newsletter.create({
       data: {
@@ -67,6 +78,10 @@ export async function POST(request: Request) {
         description: description?.trim() || null,
         status,
         tags,
+        contentType,
+        bannerImageUrl: bannerImageUrl ?? null,
+        logoUrl: logoUrl ?? null,
+        epicMetadata: epicMetadata ?? null,
       },
     });
 

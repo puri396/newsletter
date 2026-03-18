@@ -28,6 +28,7 @@ export function CopyableUrl({ url, label = "URL" }: CopyableUrlProps) {
       <button
         type="button"
         onClick={handleCopy}
+        aria-label={label}
         className="rounded border border-zinc-600 bg-zinc-800 px-2.5 py-1 text-xs font-medium text-zinc-200 hover:bg-zinc-700"
       >
         {copied ? "Copied" : "Copy"}

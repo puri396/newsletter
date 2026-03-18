@@ -80,3 +80,13 @@ export type Tag = Prisma.TagModel
  * 
  */
 export type NewsletterTag = Prisma.NewsletterTagModel
+/**
+ * Model PasswordResetToken
+ * Time-limited token used for password reset emails.
+ */
+export type PasswordResetToken = Prisma.PasswordResetTokenModel
+/**
+ * Model Media
+ * Uploaded media assets (images). Files are stored as base64 data URLs.
+ */
+export type Media = Prisma.MediaModel

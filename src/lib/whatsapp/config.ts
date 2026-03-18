@@ -1,6 +1,14 @@
 /**
- * Environment-driven configuration for WhatsApp integration.
+ * Environment-driven configuration for WhatsApp integration (Meta Cloud API).
  * Safe access; no throwing. Callers check isConfigured() before sending.
+ *
+ * Required env vars:
+ * - WHATSAPP_ACCESS_TOKEN: Meta Cloud API access token (from developers.facebook.com / Meta Business Manager).
+ * - WHATSAPP_PHONE_NUMBER_ID: WhatsApp Business phone number ID from Meta.
+ *
+ * Optional:
+ * - WHATSAPP_TEMPLATE_NAME: Template name approved in Meta Business Manager (default: "new_newsletter").
+ *   Template body should have {{1}} = subject, {{2}} = link (see buildNewsletterTemplateParams).
  */
 
 export interface WhatsAppConfig {

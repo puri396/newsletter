@@ -33,8 +33,15 @@ export type NewsletterMinAggregateOutputType = {
   aiPrompt: string | null
   aiModel: string | null
   bannerImageUrl: string | null
+  logoUrl: string | null
+  contentType: $Enums.ContentType | null
+  shortTitle: string | null
+  slug: string | null
+  publishedAt: Date | null
+  authorName: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
   authorId: string | null
 }
 
@@ -47,8 +54,15 @@ export type NewsletterMaxAggregateOutputType = {
   aiPrompt: string | null
   aiModel: string | null
   bannerImageUrl: string | null
+  logoUrl: string | null
+  contentType: $Enums.ContentType | null
+  shortTitle: string | null
+  slug: string | null
+  publishedAt: Date | null
+  authorName: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
   authorId: string | null
 }
 
@@ -64,8 +78,16 @@ export type NewsletterCountAggregateOutputType = {
   imagePrompts: number
   videoScript: number
   bannerImageUrl: number
+  logoUrl: number
+  contentType: number
+  shortTitle: number
+  slug: number
+  publishedAt: number
+  authorName: number
+  epicMetadata: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   authorId: number
   _all: number
 }
@@ -80,8 +102,15 @@ export type NewsletterMinAggregateInputType = {
   aiPrompt?: true
   aiModel?: true
   bannerImageUrl?: true
+  logoUrl?: true
+  contentType?: true
+  shortTitle?: true
+  slug?: true
+  publishedAt?: true
+  authorName?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   authorId?: true
 }
 
@@ -94,8 +123,15 @@ export type NewsletterMaxAggregateInputType = {
   aiPrompt?: true
   aiModel?: true
   bannerImageUrl?: true
+  logoUrl?: true
+  contentType?: true
+  shortTitle?: true
+  slug?: true
+  publishedAt?: true
+  authorName?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   authorId?: true
 }
 
@@ -111,8 +147,16 @@ export type NewsletterCountAggregateInputType = {
   imagePrompts?: true
   videoScript?: true
   bannerImageUrl?: true
+  logoUrl?: true
+  contentType?: true
+  shortTitle?: true
+  slug?: true
+  publishedAt?: true
+  authorName?: true
+  epicMetadata?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   authorId?: true
   _all?: true
 }
@@ -201,8 +245,16 @@ export type NewsletterGroupByOutputType = {
   imagePrompts: runtime.JsonValue | null
   videoScript: runtime.JsonValue | null
   bannerImageUrl: string | null
+  logoUrl: string | null
+  contentType: $Enums.ContentType | null
+  shortTitle: string | null
+  slug: string | null
+  publishedAt: Date | null
+  authorName: string | null
+  epicMetadata: runtime.JsonValue | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   authorId: string | null
   _count: NewsletterCountAggregateOutputType | null
   _min: NewsletterMinAggregateOutputType | null
@@ -239,8 +291,16 @@ export type NewsletterWhereInput = {
   imagePrompts?: Prisma.JsonNullableFilter<"Newsletter">
   videoScript?: Prisma.JsonNullableFilter<"Newsletter">
   bannerImageUrl?: Prisma.StringNullableFilter<"Newsletter"> | string | null
+  logoUrl?: Prisma.StringNullableFilter<"Newsletter"> | string | null
+  contentType?: Prisma.EnumContentTypeNullableFilter<"Newsletter"> | $Enums.ContentType | null
+  shortTitle?: Prisma.StringNullableFilter<"Newsletter"> | string | null
+  slug?: Prisma.StringNullableFilter<"Newsletter"> | string | null
+  publishedAt?: Prisma.DateTimeNullableFilter<"Newsletter"> | Date | string | null
+  authorName?: Prisma.StringNullableFilter<"Newsletter"> | string | null
+  epicMetadata?: Prisma.JsonNullableFilter<"Newsletter">
   createdAt?: Prisma.DateTimeFilter<"Newsletter"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Newsletter"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Newsletter"> | Date | string | null
   authorId?: Prisma.StringNullableFilter<"Newsletter"> | string | null
   author?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   schedules?: Prisma.ScheduleListRelationFilter
@@ -260,8 +320,16 @@ export type NewsletterOrderByWithRelationInput = {
   imagePrompts?: Prisma.SortOrderInput | Prisma.SortOrder
   videoScript?: Prisma.SortOrderInput | Prisma.SortOrder
   bannerImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  contentType?: Prisma.SortOrderInput | Prisma.SortOrder
+  shortTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  slug?: Prisma.SortOrderInput | Prisma.SortOrder
+  publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  authorName?: Prisma.SortOrderInput | Prisma.SortOrder
+  epicMetadata?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   authorId?: Prisma.SortOrderInput | Prisma.SortOrder
   author?: Prisma.UserOrderByWithRelationInput
   schedules?: Prisma.ScheduleOrderByRelationAggregateInput
@@ -271,6 +339,7 @@ export type NewsletterOrderByWithRelationInput = {
 
 export type NewsletterWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  slug?: string
   AND?: Prisma.NewsletterWhereInput | Prisma.NewsletterWhereInput[]
   OR?: Prisma.NewsletterWhereInput[]
   NOT?: Prisma.NewsletterWhereInput | Prisma.NewsletterWhereInput[]
@@ -284,14 +353,21 @@ export type NewsletterWhereUniqueInput = Prisma.AtLeast<{
   imagePrompts?: Prisma.JsonNullableFilter<"Newsletter">
   videoScript?: Prisma.JsonNullableFilter<"Newsletter">
   bannerImageUrl?: Prisma.StringNullableFilter<"Newsletter"> | string | null
+  logoUrl?: Prisma.StringNullableFilter<"Newsletter"> | string | null
+  contentType?: Prisma.EnumContentTypeNullableFilter<"Newsletter"> | $Enums.ContentType | null
+  shortTitle?: Prisma.StringNullableFilter<"Newsletter"> | string | null
+  publishedAt?: Prisma.DateTimeNullableFilter<"Newsletter"> | Date | string | null
+  authorName?: Prisma.StringNullableFilter<"Newsletter"> | string | null
+  epicMetadata?: Prisma.JsonNullableFilter<"Newsletter">
   createdAt?: Prisma.DateTimeFilter<"Newsletter"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Newsletter"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Newsletter"> | Date | string | null
   authorId?: Prisma.StringNullableFilter<"Newsletter"> | string | null
   author?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   schedules?: Prisma.ScheduleListRelationFilter
   emailLogs?: Prisma.EmailLogListRelationFilter
   newsletterTags?: Prisma.NewsletterTagListRelationFilter
-}, "id">
+}, "id" | "slug">
 
 export type NewsletterOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -305,8 +381,16 @@ export type NewsletterOrderByWithAggregationInput = {
   imagePrompts?: Prisma.SortOrderInput | Prisma.SortOrder
   videoScript?: Prisma.SortOrderInput | Prisma.SortOrder
   bannerImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  contentType?: Prisma.SortOrderInput | Prisma.SortOrder
+  shortTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  slug?: Prisma.SortOrderInput | Prisma.SortOrder
+  publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  authorName?: Prisma.SortOrderInput | Prisma.SortOrder
+  epicMetadata?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   authorId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.NewsletterCountOrderByAggregateInput
   _max?: Prisma.NewsletterMaxOrderByAggregateInput
@@ -328,8 +412,16 @@ export type NewsletterScalarWhereWithAggregatesInput = {
   imagePrompts?: Prisma.JsonNullableWithAggregatesFilter<"Newsletter">
   videoScript?: Prisma.JsonNullableWithAggregatesFilter<"Newsletter">
   bannerImageUrl?: Prisma.StringNullableWithAggregatesFilter<"Newsletter"> | string | null
+  logoUrl?: Prisma.StringNullableWithAggregatesFilter<"Newsletter"> | string | null
+  contentType?: Prisma.EnumContentTypeNullableWithAggregatesFilter<"Newsletter"> | $Enums.ContentType | null
+  shortTitle?: Prisma.StringNullableWithAggregatesFilter<"Newsletter"> | string | null
+  slug?: Prisma.StringNullableWithAggregatesFilter<"Newsletter"> | string | null
+  publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Newsletter"> | Date | string | null
+  authorName?: Prisma.StringNullableWithAggregatesFilter<"Newsletter"> | string | null
+  epicMetadata?: Prisma.JsonNullableWithAggregatesFilter<"Newsletter">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Newsletter"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Newsletter"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Newsletter"> | Date | string | null
   authorId?: Prisma.StringNullableWithAggregatesFilter<"Newsletter"> | string | null
 }
 
@@ -345,8 +437,16 @@ export type NewsletterCreateInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: string | null
+  logoUrl?: string | null
+  contentType?: $Enums.ContentType | null
+  shortTitle?: string | null
+  slug?: string | null
+  publishedAt?: Date | string | null
+  authorName?: string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   author?: Prisma.UserCreateNestedOneWithoutNewslettersInput
   schedules?: Prisma.ScheduleCreateNestedManyWithoutNewsletterInput
   emailLogs?: Prisma.EmailLogCreateNestedManyWithoutNewsletterInput
@@ -365,8 +465,16 @@ export type NewsletterUncheckedCreateInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: string | null
+  logoUrl?: string | null
+  contentType?: $Enums.ContentType | null
+  shortTitle?: string | null
+  slug?: string | null
+  publishedAt?: Date | string | null
+  authorName?: string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   authorId?: string | null
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutNewsletterInput
   emailLogs?: Prisma.EmailLogUncheckedCreateNestedManyWithoutNewsletterInput
@@ -385,8 +493,16 @@ export type NewsletterUpdateInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentType?: Prisma.NullableEnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType | null
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   author?: Prisma.UserUpdateOneWithoutNewslettersNestedInput
   schedules?: Prisma.ScheduleUpdateManyWithoutNewsletterNestedInput
   emailLogs?: Prisma.EmailLogUpdateManyWithoutNewsletterNestedInput
@@ -405,8 +521,16 @@ export type NewsletterUncheckedUpdateInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentType?: Prisma.NullableEnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType | null
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutNewsletterNestedInput
   emailLogs?: Prisma.EmailLogUncheckedUpdateManyWithoutNewsletterNestedInput
@@ -425,8 +549,16 @@ export type NewsletterCreateManyInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: string | null
+  logoUrl?: string | null
+  contentType?: $Enums.ContentType | null
+  shortTitle?: string | null
+  slug?: string | null
+  publishedAt?: Date | string | null
+  authorName?: string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   authorId?: string | null
 }
 
@@ -442,8 +574,16 @@ export type NewsletterUpdateManyMutationInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentType?: Prisma.NullableEnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType | null
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type NewsletterUncheckedUpdateManyInput = {
@@ -458,8 +598,16 @@ export type NewsletterUncheckedUpdateManyInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentType?: Prisma.NullableEnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType | null
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -493,8 +641,16 @@ export type NewsletterCountOrderByAggregateInput = {
   imagePrompts?: Prisma.SortOrder
   videoScript?: Prisma.SortOrder
   bannerImageUrl?: Prisma.SortOrder
+  logoUrl?: Prisma.SortOrder
+  contentType?: Prisma.SortOrder
+  shortTitle?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
+  authorName?: Prisma.SortOrder
+  epicMetadata?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
 }
 
@@ -507,8 +663,15 @@ export type NewsletterMaxOrderByAggregateInput = {
   aiPrompt?: Prisma.SortOrder
   aiModel?: Prisma.SortOrder
   bannerImageUrl?: Prisma.SortOrder
+  logoUrl?: Prisma.SortOrder
+  contentType?: Prisma.SortOrder
+  shortTitle?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
+  authorName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
 }
 
@@ -521,8 +684,15 @@ export type NewsletterMinOrderByAggregateInput = {
   aiPrompt?: Prisma.SortOrder
   aiModel?: Prisma.SortOrder
   bannerImageUrl?: Prisma.SortOrder
+  logoUrl?: Prisma.SortOrder
+  contentType?: Prisma.SortOrder
+  shortTitle?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
+  authorName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
 }
 
@@ -586,6 +756,14 @@ export type NewsletterUpdatetagsInput = {
   push?: string | string[]
 }
 
+export type NullableEnumContentTypeFieldUpdateOperationsInput = {
+  set?: $Enums.ContentType | null
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type NewsletterCreateNestedOneWithoutSchedulesInput = {
   create?: Prisma.XOR<Prisma.NewsletterCreateWithoutSchedulesInput, Prisma.NewsletterUncheckedCreateWithoutSchedulesInput>
   connectOrCreate?: Prisma.NewsletterCreateOrConnectWithoutSchedulesInput
@@ -640,8 +818,16 @@ export type NewsletterCreateWithoutAuthorInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: string | null
+  logoUrl?: string | null
+  contentType?: $Enums.ContentType | null
+  shortTitle?: string | null
+  slug?: string | null
+  publishedAt?: Date | string | null
+  authorName?: string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   schedules?: Prisma.ScheduleCreateNestedManyWithoutNewsletterInput
   emailLogs?: Prisma.EmailLogCreateNestedManyWithoutNewsletterInput
   newsletterTags?: Prisma.NewsletterTagCreateNestedManyWithoutNewsletterInput
@@ -659,8 +845,16 @@ export type NewsletterUncheckedCreateWithoutAuthorInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: string | null
+  logoUrl?: string | null
+  contentType?: $Enums.ContentType | null
+  shortTitle?: string | null
+  slug?: string | null
+  publishedAt?: Date | string | null
+  authorName?: string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutNewsletterInput
   emailLogs?: Prisma.EmailLogUncheckedCreateNestedManyWithoutNewsletterInput
   newsletterTags?: Prisma.NewsletterTagUncheckedCreateNestedManyWithoutNewsletterInput
@@ -707,8 +901,16 @@ export type NewsletterScalarWhereInput = {
   imagePrompts?: Prisma.JsonNullableFilter<"Newsletter">
   videoScript?: Prisma.JsonNullableFilter<"Newsletter">
   bannerImageUrl?: Prisma.StringNullableFilter<"Newsletter"> | string | null
+  logoUrl?: Prisma.StringNullableFilter<"Newsletter"> | string | null
+  contentType?: Prisma.EnumContentTypeNullableFilter<"Newsletter"> | $Enums.ContentType | null
+  shortTitle?: Prisma.StringNullableFilter<"Newsletter"> | string | null
+  slug?: Prisma.StringNullableFilter<"Newsletter"> | string | null
+  publishedAt?: Prisma.DateTimeNullableFilter<"Newsletter"> | Date | string | null
+  authorName?: Prisma.StringNullableFilter<"Newsletter"> | string | null
+  epicMetadata?: Prisma.JsonNullableFilter<"Newsletter">
   createdAt?: Prisma.DateTimeFilter<"Newsletter"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Newsletter"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Newsletter"> | Date | string | null
   authorId?: Prisma.StringNullableFilter<"Newsletter"> | string | null
 }
 
@@ -724,8 +926,16 @@ export type NewsletterCreateWithoutSchedulesInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: string | null
+  logoUrl?: string | null
+  contentType?: $Enums.ContentType | null
+  shortTitle?: string | null
+  slug?: string | null
+  publishedAt?: Date | string | null
+  authorName?: string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   author?: Prisma.UserCreateNestedOneWithoutNewslettersInput
   emailLogs?: Prisma.EmailLogCreateNestedManyWithoutNewsletterInput
   newsletterTags?: Prisma.NewsletterTagCreateNestedManyWithoutNewsletterInput
@@ -743,8 +953,16 @@ export type NewsletterUncheckedCreateWithoutSchedulesInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: string | null
+  logoUrl?: string | null
+  contentType?: $Enums.ContentType | null
+  shortTitle?: string | null
+  slug?: string | null
+  publishedAt?: Date | string | null
+  authorName?: string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   authorId?: string | null
   emailLogs?: Prisma.EmailLogUncheckedCreateNestedManyWithoutNewsletterInput
   newsletterTags?: Prisma.NewsletterTagUncheckedCreateNestedManyWithoutNewsletterInput
@@ -778,8 +996,16 @@ export type NewsletterUpdateWithoutSchedulesInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentType?: Prisma.NullableEnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType | null
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   author?: Prisma.UserUpdateOneWithoutNewslettersNestedInput
   emailLogs?: Prisma.EmailLogUpdateManyWithoutNewsletterNestedInput
   newsletterTags?: Prisma.NewsletterTagUpdateManyWithoutNewsletterNestedInput
@@ -797,8 +1023,16 @@ export type NewsletterUncheckedUpdateWithoutSchedulesInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentType?: Prisma.NullableEnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType | null
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emailLogs?: Prisma.EmailLogUncheckedUpdateManyWithoutNewsletterNestedInput
   newsletterTags?: Prisma.NewsletterTagUncheckedUpdateManyWithoutNewsletterNestedInput
@@ -816,8 +1050,16 @@ export type NewsletterCreateWithoutEmailLogsInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: string | null
+  logoUrl?: string | null
+  contentType?: $Enums.ContentType | null
+  shortTitle?: string | null
+  slug?: string | null
+  publishedAt?: Date | string | null
+  authorName?: string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   author?: Prisma.UserCreateNestedOneWithoutNewslettersInput
   schedules?: Prisma.ScheduleCreateNestedManyWithoutNewsletterInput
   newsletterTags?: Prisma.NewsletterTagCreateNestedManyWithoutNewsletterInput
@@ -835,8 +1077,16 @@ export type NewsletterUncheckedCreateWithoutEmailLogsInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: string | null
+  logoUrl?: string | null
+  contentType?: $Enums.ContentType | null
+  shortTitle?: string | null
+  slug?: string | null
+  publishedAt?: Date | string | null
+  authorName?: string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   authorId?: string | null
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutNewsletterInput
   newsletterTags?: Prisma.NewsletterTagUncheckedCreateNestedManyWithoutNewsletterInput
@@ -870,8 +1120,16 @@ export type NewsletterUpdateWithoutEmailLogsInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentType?: Prisma.NullableEnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType | null
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   author?: Prisma.UserUpdateOneWithoutNewslettersNestedInput
   schedules?: Prisma.ScheduleUpdateManyWithoutNewsletterNestedInput
   newsletterTags?: Prisma.NewsletterTagUpdateManyWithoutNewsletterNestedInput
@@ -889,8 +1147,16 @@ export type NewsletterUncheckedUpdateWithoutEmailLogsInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentType?: Prisma.NullableEnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType | null
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutNewsletterNestedInput
   newsletterTags?: Prisma.NewsletterTagUncheckedUpdateManyWithoutNewsletterNestedInput
@@ -908,8 +1174,16 @@ export type NewsletterCreateWithoutNewsletterTagsInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: string | null
+  logoUrl?: string | null
+  contentType?: $Enums.ContentType | null
+  shortTitle?: string | null
+  slug?: string | null
+  publishedAt?: Date | string | null
+  authorName?: string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   author?: Prisma.UserCreateNestedOneWithoutNewslettersInput
   schedules?: Prisma.ScheduleCreateNestedManyWithoutNewsletterInput
   emailLogs?: Prisma.EmailLogCreateNestedManyWithoutNewsletterInput
@@ -927,8 +1201,16 @@ export type NewsletterUncheckedCreateWithoutNewsletterTagsInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: string | null
+  logoUrl?: string | null
+  contentType?: $Enums.ContentType | null
+  shortTitle?: string | null
+  slug?: string | null
+  publishedAt?: Date | string | null
+  authorName?: string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   authorId?: string | null
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutNewsletterInput
   emailLogs?: Prisma.EmailLogUncheckedCreateNestedManyWithoutNewsletterInput
@@ -962,8 +1244,16 @@ export type NewsletterUpdateWithoutNewsletterTagsInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentType?: Prisma.NullableEnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType | null
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   author?: Prisma.UserUpdateOneWithoutNewslettersNestedInput
   schedules?: Prisma.ScheduleUpdateManyWithoutNewsletterNestedInput
   emailLogs?: Prisma.EmailLogUpdateManyWithoutNewsletterNestedInput
@@ -981,8 +1271,16 @@ export type NewsletterUncheckedUpdateWithoutNewsletterTagsInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentType?: Prisma.NullableEnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType | null
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutNewsletterNestedInput
   emailLogs?: Prisma.EmailLogUncheckedUpdateManyWithoutNewsletterNestedInput
@@ -1000,8 +1298,16 @@ export type NewsletterCreateManyAuthorInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: string | null
+  logoUrl?: string | null
+  contentType?: $Enums.ContentType | null
+  shortTitle?: string | null
+  slug?: string | null
+  publishedAt?: Date | string | null
+  authorName?: string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type NewsletterUpdateWithoutAuthorInput = {
@@ -1016,8 +1322,16 @@ export type NewsletterUpdateWithoutAuthorInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentType?: Prisma.NullableEnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType | null
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   schedules?: Prisma.ScheduleUpdateManyWithoutNewsletterNestedInput
   emailLogs?: Prisma.EmailLogUpdateManyWithoutNewsletterNestedInput
   newsletterTags?: Prisma.NewsletterTagUpdateManyWithoutNewsletterNestedInput
@@ -1035,8 +1349,16 @@ export type NewsletterUncheckedUpdateWithoutAuthorInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentType?: Prisma.NullableEnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType | null
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutNewsletterNestedInput
   emailLogs?: Prisma.EmailLogUncheckedUpdateManyWithoutNewsletterNestedInput
   newsletterTags?: Prisma.NewsletterTagUncheckedUpdateManyWithoutNewsletterNestedInput
@@ -1054,8 +1376,16 @@ export type NewsletterUncheckedUpdateManyWithoutAuthorInput = {
   imagePrompts?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   videoScript?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   bannerImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentType?: Prisma.NullableEnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType | null
+  shortTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  epicMetadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -1119,8 +1449,16 @@ export type NewsletterSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   imagePrompts?: boolean
   videoScript?: boolean
   bannerImageUrl?: boolean
+  logoUrl?: boolean
+  contentType?: boolean
+  shortTitle?: boolean
+  slug?: boolean
+  publishedAt?: boolean
+  authorName?: boolean
+  epicMetadata?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   authorId?: boolean
   author?: boolean | Prisma.Newsletter$authorArgs<ExtArgs>
   schedules?: boolean | Prisma.Newsletter$schedulesArgs<ExtArgs>
@@ -1141,8 +1479,16 @@ export type NewsletterSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   imagePrompts?: boolean
   videoScript?: boolean
   bannerImageUrl?: boolean
+  logoUrl?: boolean
+  contentType?: boolean
+  shortTitle?: boolean
+  slug?: boolean
+  publishedAt?: boolean
+  authorName?: boolean
+  epicMetadata?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   authorId?: boolean
   author?: boolean | Prisma.Newsletter$authorArgs<ExtArgs>
 }, ExtArgs["result"]["newsletter"]>
@@ -1159,8 +1505,16 @@ export type NewsletterSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   imagePrompts?: boolean
   videoScript?: boolean
   bannerImageUrl?: boolean
+  logoUrl?: boolean
+  contentType?: boolean
+  shortTitle?: boolean
+  slug?: boolean
+  publishedAt?: boolean
+  authorName?: boolean
+  epicMetadata?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   authorId?: boolean
   author?: boolean | Prisma.Newsletter$authorArgs<ExtArgs>
 }, ExtArgs["result"]["newsletter"]>
@@ -1177,12 +1531,20 @@ export type NewsletterSelectScalar = {
   imagePrompts?: boolean
   videoScript?: boolean
   bannerImageUrl?: boolean
+  logoUrl?: boolean
+  contentType?: boolean
+  shortTitle?: boolean
+  slug?: boolean
+  publishedAt?: boolean
+  authorName?: boolean
+  epicMetadata?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   authorId?: boolean
 }
 
-export type NewsletterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "subject" | "description" | "body" | "tags" | "aiPrompt" | "aiModel" | "imagePrompts" | "videoScript" | "bannerImageUrl" | "createdAt" | "updatedAt" | "authorId", ExtArgs["result"]["newsletter"]>
+export type NewsletterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "subject" | "description" | "body" | "tags" | "aiPrompt" | "aiModel" | "imagePrompts" | "videoScript" | "bannerImageUrl" | "logoUrl" | "contentType" | "shortTitle" | "slug" | "publishedAt" | "authorName" | "epicMetadata" | "createdAt" | "updatedAt" | "deletedAt" | "authorId", ExtArgs["result"]["newsletter"]>
 export type NewsletterInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.Newsletter$authorArgs<ExtArgs>
   schedules?: boolean | Prisma.Newsletter$schedulesArgs<ExtArgs>
@@ -1223,8 +1585,37 @@ export type $NewsletterPayload<ExtArgs extends runtime.Types.Extensions.Internal
      * Optional banner image URL (e.g. from AI generation). May be temporary; production may re-host.
      */
     bannerImageUrl: string | null
+    /**
+     * Optional logo URL shown in the email header and preview.
+     */
+    logoUrl: string | null
+    /**
+     * EPIC content type (newsletter, blog, image, video). Null = legacy newsletter.
+     */
+    contentType: $Enums.ContentType | null
+    /**
+     * Short title for display in lists.
+     */
+    shortTitle: string | null
+    /**
+     * URL-friendly slug for public blog view. Auto-generated from subject when contentType=blog.
+     */
+    slug: string | null
+    /**
+     * When content was published (if status is published).
+     */
+    publishedAt: Date | null
+    /**
+     * Denormalized author name for display.
+     */
+    authorName: string | null
+    /**
+     * EPIC-specific metadata (tone, hashtags, socialShare, etc.).
+     */
+    epicMetadata: runtime.JsonValue | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
     authorId: string | null
   }, ExtArgs["result"]["newsletter"]>
   composites: {}
@@ -1664,8 +2055,16 @@ export interface NewsletterFieldRefs {
   readonly imagePrompts: Prisma.FieldRef<"Newsletter", 'Json'>
   readonly videoScript: Prisma.FieldRef<"Newsletter", 'Json'>
   readonly bannerImageUrl: Prisma.FieldRef<"Newsletter", 'String'>
+  readonly logoUrl: Prisma.FieldRef<"Newsletter", 'String'>
+  readonly contentType: Prisma.FieldRef<"Newsletter", 'ContentType'>
+  readonly shortTitle: Prisma.FieldRef<"Newsletter", 'String'>
+  readonly slug: Prisma.FieldRef<"Newsletter", 'String'>
+  readonly publishedAt: Prisma.FieldRef<"Newsletter", 'DateTime'>
+  readonly authorName: Prisma.FieldRef<"Newsletter", 'String'>
+  readonly epicMetadata: Prisma.FieldRef<"Newsletter", 'Json'>
   readonly createdAt: Prisma.FieldRef<"Newsletter", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Newsletter", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"Newsletter", 'DateTime'>
   readonly authorId: Prisma.FieldRef<"Newsletter", 'String'>
 }
     
